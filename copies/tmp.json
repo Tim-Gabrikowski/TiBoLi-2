@@ -1,0 +1,12 @@
+{
+	"mNumber": 123456789,
+	"bookId": 1,
+	"lifecycle": 1,
+	"_LINK": {
+		"book": {
+			"id": 1,
+			"title": "title",
+			"author": "author"
+		}
+	}
+}
