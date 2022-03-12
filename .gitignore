@@ -5,3 +5,6 @@ node_modules
 *.conf.json
 
 *.vscode/
+
+# sql queries
+*.sql
