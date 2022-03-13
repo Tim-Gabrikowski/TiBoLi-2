@@ -1,9 +1,12 @@
+const { stringify } = require("nodemon/lib/utils");
 const {
 	getAll,
 	getById,
 	createNew,
 	updateExisting,
 	getCopiesFromBook,
+	getSearched,
+	deleteBook,
 } = require("./save");
 
 function getAllAction(req, res) {
@@ -71,6 +74,27 @@ function getCopiesAction(req, res) {
 		});
 	});
 }
+function getSearchTermAction(req, res) {
+	getSearched(stringify(req.params.term), (err, result) => {
+		if (err) {
+			res.status(500).send("MySQL sucks!");
+			throw err;
+		} else {
+			res.status(200).send(result);
+		}
+	});
+}
+function deleteBookAction(req, res) {
+	console.log("deleteBook");
+	deleteBook(req.params.id, (err, result) => {
+		if (err) {
+			res.status(500).send("MySQL sucks!");
+			throw err;
+		} else {
+			res.status(200).send(result);
+		}
+	});
+}
 
 module.exports = {
 	getAllAction,
@@ -78,4 +102,6 @@ module.exports = {
 	createNewAction,
 	updateAction,
 	getCopiesAction,
+	getSearchTermAction,
+	deleteBookAction,
 };

@@ -6,9 +6,12 @@ const {
 	createNewAction,
 	updateAction,
 	getCopiesAction,
+	getSearchTermAction,
+	deleteBookAction,
 } = require("./controller");
 
 router.get("/", getAllAction);
+router.get("/search/:term", getSearchTermAction);
 router.get("/:id", getIdAction);
 router.put("/", (req, res) => {
 	if (req.body.id === undefined) {
@@ -18,4 +21,6 @@ router.put("/", (req, res) => {
 	}
 });
 router.get("/:id/copies", getCopiesAction);
+router.delete("/:id", deleteBookAction);
+
 module.exports = router;

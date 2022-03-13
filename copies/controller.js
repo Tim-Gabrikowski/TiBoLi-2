@@ -4,6 +4,7 @@ const {
 	createNew,
 	getAllNumbers,
 	getBookFromId,
+	setCopyLifecycle,
 } = require("./save");
 
 const dataTemplate = {
@@ -77,9 +78,18 @@ function createNewAction(req, res) {
 		});
 	});
 }
-
+function setLifecycleAction(req, res) {
+	setCopyLifecycle(req.body.mNumber, req.body.lifecycle, (err, result) => {
+		if (err) {
+			res.status(500).send("---Error! out of Phrases---");
+			throw err;
+		}
+		res.status(200).send(result);
+	});
+}
 module.exports = {
 	getAllAction,
 	getByNumberAction,
 	createNewAction,
+	setLifecycleAction,
 };

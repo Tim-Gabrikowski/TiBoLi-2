@@ -30,10 +30,17 @@ function getAllNumbers(callback) {
 function getBookFromId(id, callback) {
 	query(`SELECT * FROM books WHERE id = ${id}`, callback);
 }
+function setCopyLifecycle(mNumber, lifecycle, callback) {
+	query(
+		`UPDATE copies SET lifecycle = ${lifecycle} WHERE mNUmber = ${mNumber}`,
+		callback
+	);
+}
 module.exports = {
 	getAll,
 	getByNumber,
 	createNew,
 	getAllNumbers,
 	getBookFromId,
+	setCopyLifecycle,
 };
