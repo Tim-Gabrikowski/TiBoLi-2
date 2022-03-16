@@ -6,12 +6,14 @@ const {
 	createNewAction,
 	updateAction,
 	getCopiesAction,
-	getSearchTermAction,
+	searchByTitleAction,
+	searchByAuthorAction,
 	deleteBookAction,
 } = require("./controller");
 
 router.get("/", getAllAction);
-router.get("/search/:term", getSearchTermAction);
+router.get("/search/title/:term", searchByTitleAction);
+router.get("/search/author/:term", searchByAuthorAction);
 router.get("/:id", getIdAction);
 router.put("/", (req, res) => {
 	if (req.body.id === undefined) {

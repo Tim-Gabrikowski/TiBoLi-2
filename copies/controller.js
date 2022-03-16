@@ -57,24 +57,30 @@ function getByNumberAction(req, res) {
 }
 function createNewAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
+	amount = req.body.amount;
 	getAllNumbers((err, result) => {
 		if (err) throw err;
 		var numbers = JSON.stringify(result);
 		var numbers = JSON.parse(numbers);
 		var count = numbers.length;
+		var copies = [];
 
-		var mediaNumber = 111111111 + count;
-		var copy = {
-			mNumber: mediaNumber,
-			bookId: req.body.bookId,
-			lifecycle: 1,
-		};
-		createNew(copy, (err, result) => {
+		for (var i = 0; i < amount; i++) {
+			var mediaNumber = 111111111 + count + i;
+
+			var copy = {
+				mNumber: mediaNumber,
+				bookId: req.body.bookId,
+				lifecycle: 1,
+			};
+			copies.push(copy);
+		}
+		createNew(copies, (err, result) => {
 			if (err) {
 				res.status(500).send("---Error! out of Phrases---");
 				throw err;
 			}
-			res.status(200).send(copy);
+			res.status(200).send(copies);
 		});
 	});
 }

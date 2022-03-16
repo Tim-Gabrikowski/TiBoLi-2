@@ -41,18 +41,7 @@ function getCopiesFromBook(bookId, callback) {
 		callback
 	);
 }
-function getSearched(stringToSearch, callback) {
-	var parts = stringToSearch.split(" ");
-	var searchString = "";
-	parts.forEach((element) => {
-		searchString += "%" + element + "%";
-	});
-	searchString = searchString.replace("'", "''");
-	query(
-		`SELECT * FROM books WHERE title LIKE '${searchString}' AND deleted = 0`,
-		callback
-	);
-}
+
 function deleteBook(bookId, callback) {
 	query(`UPDATE books SET deleted = 1 WHERE id = ${bookId}`, callback);
 }
@@ -62,6 +51,6 @@ module.exports = {
 	createNew,
 	updateExisting,
 	getCopiesFromBook,
-	getSearched,
+
 	deleteBook,
 };

@@ -18,9 +18,16 @@ function getAll(callback) {
 function getByNumber(mNumber, callback) {
 	query(`SELECT * FROM copies WHERE mNumber = ${mNumber}`, callback);
 }
-function createNew(copy, callback) {
+function createNew(copies, callback) {
+	var queryValues = "";
+
+	for (var i = 0; i < copies.length; i++) {
+		queryValues += `(${copies[i].mNumber}, ${copies[i].bookId}, ${copies[i].lifecycle}),`;
+	}
+	queryValues = queryValues.slice(0, -1);
+
 	query(
-		`INSERT INTO copies (mNumber, bookId, lifecycle) VALUES (${copy.mNumber}, ${copy.bookId}, ${copy.lifecycle});`,
+		`INSERT INTO copies (mNumber, bookId, lifecycle) VALUES ${queryValues};`,
 		callback
 	);
 }

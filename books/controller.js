@@ -1,11 +1,11 @@
 const { stringify } = require("nodemon/lib/utils");
+const levenshtein = require("js-levenshtein");
 const {
 	getAll,
 	getById,
 	createNew,
 	updateExisting,
 	getCopiesFromBook,
-	getSearched,
 	deleteBook,
 } = require("./save");
 
@@ -69,19 +69,48 @@ function getCopiesAction(req, res) {
 			if (err) throw err;
 			body.copies = JSON.parse(JSON.stringify(results));
 
-			console.log(body);
 			res.status(200).send(body);
 		});
 	});
 }
-function getSearchTermAction(req, res) {
-	getSearched(stringify(req.params.term), (err, result) => {
+function searchByTitleAction(req, res) {
+	getAll((err, result) => {
 		if (err) {
 			res.status(500).send("MySQL sucks!");
 			throw err;
-		} else {
-			res.status(200).send(result);
 		}
+		const searchTerm = req.params.term;
+
+		result = JSON.parse(JSON.stringify(result));
+		body = [];
+		maxOps = 0.4 * searchTerm.length + 3;
+		result.forEach((element) => {
+			var dist = levenshtein(element.title, searchTerm);
+			if (dist <= maxOps) {
+				body.push(element);
+			}
+		});
+		res.status(200).send(body);
+	});
+}
+function searchByAuthorAction(req, res) {
+	getAll((err, result) => {
+		if (err) {
+			res.status(500).send("MySQL sucks!");
+			throw err;
+		}
+		const searchTerm = req.params.term;
+
+		result = JSON.parse(JSON.stringify(result));
+		body = [];
+		maxOps = 0.4 * searchTerm.length + 3;
+		result.forEach((element) => {
+			var dist = levenshtein(element.author, searchTerm);
+			if (dist <= maxOps) {
+				body.push(element);
+			}
+		});
+		res.status(200).send(body);
 	});
 }
 function deleteBookAction(req, res) {
@@ -102,6 +131,7 @@ module.exports = {
 	createNewAction,
 	updateAction,
 	getCopiesAction,
-	getSearchTermAction,
+	searchByTitleAction,
+	searchByAuthorAction,
 	deleteBookAction,
 };
