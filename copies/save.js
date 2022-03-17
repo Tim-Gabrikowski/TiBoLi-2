@@ -5,6 +5,7 @@ var con = mysql.createConnection(dbConf);
 
 con.connect(function (err) {
 	if (err) throw err;
+	console.log("Copies connected!");
 });
 
 function query(sql, callback) {

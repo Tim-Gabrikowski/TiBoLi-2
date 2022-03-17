@@ -6,6 +6,7 @@ var con = mysql.createConnection(dbConf);
 
 con.connect(function (err) {
 	if (err) throw err;
+	console.log("Books connected!");
 });
 
 function query(sql, callback) {

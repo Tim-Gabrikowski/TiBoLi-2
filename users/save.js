@@ -6,6 +6,7 @@ var con = mysql.createConnection(dbConf);
 
 con.connect(function (err) {
 	if (err) throw err;
+	console.log("User connected!");
 });
 
 function query(sql, callback) {
@@ -17,22 +18,31 @@ function getAll(callback) {
 	query(`SELECT * FROM users`, callback);
 }
 function getByNumber(bNumber, callback) {
-	query(`SELECT * FROM users WHERE bNumber = ${bNumber}`, callback);
+	query(`SELECT * FROM users WHERE id = ${bNumber}`, callback);
 }
 function createNew(user, callback) {
 	query(
-		`INSERT INTO users (bNumber, vorname, nachname) VALUES (${user.bNumber}, '${user.vorname}', '${user.nachname}')`,
+		`INSERT INTO users (vorname, nachname, classId) VALUES ( '${user.vorname}', '${user.nachname}', ${user.classId})`,
 		callback
 	);
 }
+function getClass(classID, callback) {
+	query(`SELECT * FROM classes WHERE id = ${classID} `, callback);
+}
 function updateExisting(user, callback) {
 	query(
-		`UPDATE users SET vorname = '${user.vorname}', nachname = '${user.nachname}' WHERE bNumber = ${user.bNumber}`,
+		`UPDATE users SET vorname = '${user.vorname}', nachname = '${user.nachname}', classId = ${user.classId} WHERE id = ${user.id}`,
 		callback
 	);
 }
 function getAllNumbers(callback) {
-	query(`SELECT bNumber FROM users`, callback);
+	query(`SELECT id FROM users`, callback);
+}
+function getClasses(callback) {
+	query(`SELECT * FROM classes`, callback);
+}
+function deleteUser(id, callback) {
+	query(`DELETE FROM users WHERE id = ${id}`, callback);
 }
 module.exports = {
 	getAll,
@@ -40,4 +50,7 @@ module.exports = {
 	createNew,
 	updateExisting,
 	getAllNumbers,
+	getClass,
+	getClasses,
+	deleteUser,
 };
