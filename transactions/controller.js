@@ -14,10 +14,7 @@ function getAllAction(req, res) {
 			res.status(500).send("INTERNAL SERVER PROBLEMS");
 		}
 		result = JSON.parse(JSON.stringify(result));
-		result.forEach((element) => {
-			element.lentDate = mysqlDateToString(element.lentDate);
-			element.backDate = mysqlDateToString(element.backDate);
-		});
+
 		res.send(result);
 	});
 }
@@ -31,7 +28,7 @@ function newTransactionAction(req, res) {
 		transactionId: 0,
 		user: req.body.bNumber,
 		copy: req.body.mNumber,
-		lentDate: mysqlDate(),
+		lentDate: Date.now(),
 	};
 	countUnfinnishedTransactions(transaction.copy, (err, results) => {
 		if (err) throw err;
@@ -39,7 +36,7 @@ function newTransactionAction(req, res) {
 		results = JSON.parse(JSON.stringify(results));
 
 		if (results[0].count != 0) {
-			res.status(200).send("bereits geliehen");
+			res.status(200).send({ status: 2, message: "ausgeliehen!" });
 		} else {
 			newTransaction(transaction, (err, result) => {
 				if (err) {
@@ -49,7 +46,11 @@ function newTransactionAction(req, res) {
 				result = JSON.parse(JSON.stringify(result));
 
 				transaction.transactionId = result.insertId;
-				res.status(200).send(transaction);
+				res.status(200).send({
+					status: 0,
+					message: "ok",
+					transaction: transaction,
+				});
 			});
 		}
 	});
@@ -59,7 +60,7 @@ function newTransactionAction(req, res) {
 function finnishTransactionAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
 	const { mNumber } = req.body;
-	finnishTransaction(mNumber, mysqlDate(), (err, result) => {
+	finnishTransaction(mNumber, Date.now(), (err, result) => {
 		if (err) {
 			res.status(500).send(
 				"It might be, that the server is not working correctly."
@@ -67,7 +68,7 @@ function finnishTransactionAction(req, res) {
 			throw err;
 		}
 
-		res.status(200).send(result);
+		res.status(200).send({ status: 0, message: "ok" });
 	});
 }
 

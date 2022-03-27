@@ -34,7 +34,7 @@ function countUnfinnishedTransactions(mNumber, callback) {
 }
 function finnishTransaction(mNumber, backDate, callback) {
 	query(
-		`UPDATE transactions SET backDate = '${backDate}' WHERE mNumber = ${mNumber} AND backDate IS NULL`,
+		`UPDATE transactions SET backDate = ${backDate} WHERE mNumber = ${mNumber} AND backDate IS NULL`,
 		callback
 	);
 }
