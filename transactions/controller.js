@@ -40,17 +40,21 @@ function newTransactionAction(req, res) {
 		} else {
 			newTransaction(transaction, (err, result) => {
 				if (err) {
-					res.status(500).send("Server fucked off!");
-					throw err;
+					res.send({
+						status: 4,
+						message: "fehler ist aufgetreten",
+					});
 				}
-				result = JSON.parse(JSON.stringify(result));
+				if (!err) {
+					result = JSON.parse(JSON.stringify(result));
 
-				transaction.transactionId = result.insertId;
-				res.status(200).send({
-					status: 0,
-					message: "ok",
-					transaction: transaction,
-				});
+					transaction.transactionId = result.insertId;
+					res.status(200).send({
+						status: 0,
+						message: "ok",
+						transaction: transaction,
+					});
+				}
 			});
 		}
 	});
