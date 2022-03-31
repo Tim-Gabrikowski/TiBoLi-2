@@ -66,7 +66,6 @@ function updateAction(req, res) {
 	});
 }
 function getCopiesAction(req, res) {
-	console.log("getCOpiesAction");
 	res.set("Access-Control-Allow-Origin", "*");
 	getById(req.params.id, (err, result) => {
 		if (err)

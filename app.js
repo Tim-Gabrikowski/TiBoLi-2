@@ -30,6 +30,7 @@ process.on("uncaughtException", (err) => {
 		)
 	) {
 		console.log(err.message);
+		console.log(err.origin);
 		err.response.status(500).send(err.message);
 	} else {
 		console.log("unknown error");
