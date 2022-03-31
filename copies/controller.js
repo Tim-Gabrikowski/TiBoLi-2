@@ -23,10 +23,14 @@ const dataTemplate = {
 function getAllAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
 	getAll((err, result) => {
-		if (err) {
-			res.status(500).send("Database fucked off");
-			throw err;
-		}
+		if (err)
+			throw {
+				request: req,
+				response: res,
+				message: "Something went wrong",
+				origin: "copies/controller/getAllAction",
+				errorObject: err,
+			};
 
 		res.status(200).send(result);
 	});
@@ -34,13 +38,24 @@ function getAllAction(req, res) {
 function getByNumberAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
 	getByNumber(req.params.mNumber, (err, result) => {
-		if (err) {
-			res.status(500).send("MySQL sucks!");
-			throw err;
-		}
+		if (err)
+			throw {
+				request: req,
+				response: res,
+				message: "Something went wrong",
+				origin: "copies/controller/getByNumberAction",
+				errorObject: err,
+			};
 		result = JSON.parse(JSON.stringify(result));
 		getBookFromId(result[0].bookId, (err, results) => {
-			if (err) throw err;
+			if (err)
+				throw {
+					request: req,
+					response: res,
+					message: "Something went wrong",
+					origin: "copies/controller/getByNumberAction",
+					errorObject: err,
+				};
 			results = JSON.parse(JSON.stringify(results));
 			var obj = dataTemplate;
 
@@ -59,7 +74,15 @@ function createNewAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
 	amount = req.body.amount;
 	getAllNumbers((err, result) => {
-		if (err) throw err;
+		if (err)
+			throw {
+				request: req,
+				response: res,
+				message: "Something went wrong",
+				origin: "copies/controller/createNewAction",
+				errorObject: err,
+			};
+
 		var numbers = JSON.stringify(result);
 		var numbers = JSON.parse(numbers);
 		var count = numbers.length;
@@ -76,20 +99,28 @@ function createNewAction(req, res) {
 			copies.push(copy);
 		}
 		createNew(copies, (err, result) => {
-			if (err) {
-				res.status(500).send("---Error! out of Phrases---");
-				throw err;
-			}
+			if (err)
+				throw {
+					request: req,
+					response: res,
+					message: "Something went wrong",
+					origin: "copies/controller/createNewAction",
+					errorObject: err,
+				};
 			res.status(200).send(copies);
 		});
 	});
 }
 function setLifecycleAction(req, res) {
 	setCopyLifecycle(req.body.mNumber, req.body.lifecycle, (err, result) => {
-		if (err) {
-			res.status(500).send("---Error! out of Phrases---");
-			throw err;
-		}
+		if (err)
+			throw {
+				request: req,
+				response: res,
+				message: "Something went wrong",
+				origin: "copies/controller/setLifeCycleAction",
+				errorObject: err,
+			};
 		res.status(200).send(result);
 	});
 }

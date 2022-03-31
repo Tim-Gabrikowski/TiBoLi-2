@@ -1,5 +1,5 @@
 var mysql = require("mysql8.0");
-const dbConf = require("../db.config.json");
+const dbConf = require("../db.conf.json");
 
 var con = mysql.createConnection(dbConf);
 

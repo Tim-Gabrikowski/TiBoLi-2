@@ -10,9 +10,14 @@ const {
 function getAllAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
 	getAll((err, result) => {
-		if (err) {
-			res.status(500).send("INTERNAL SERVER PROBLEMS");
-		}
+		if (err)
+			throw {
+				request: req,
+				response: res,
+				message: "Something went wrong",
+				origin: "transactions/controller/getAllAction",
+				errorObject: err,
+			};
 		result = JSON.parse(JSON.stringify(result));
 
 		res.send(result);
@@ -31,7 +36,14 @@ function newTransactionAction(req, res) {
 		lentDate: Date.now(),
 	};
 	countUnfinnishedTransactions(transaction.copy, (err, results) => {
-		if (err) throw err;
+		if (err)
+			throw {
+				request: req,
+				response: res,
+				message: "Something went wrong",
+				origin: "transactions/controller/newTransactionAction",
+				errorObject: err,
+			};
 
 		results = JSON.parse(JSON.stringify(results));
 
@@ -65,12 +77,14 @@ function finnishTransactionAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
 	const { mNumber } = req.body;
 	finnishTransaction(mNumber, Date.now(), (err, result) => {
-		if (err) {
-			res.status(500).send(
-				"It might be, that the server is not working correctly."
-			);
-			throw err;
-		}
+		if (err)
+			throw {
+				request: req,
+				response: res,
+				message: "Something went wrong",
+				origin: "transactions/controller/finnishTransactionAction",
+				errorObject: err,
+			};
 
 		res.status(200).send({ status: 0, message: "ok" });
 	});

@@ -19,3 +19,20 @@ app.use("/transactions", transactionsRouter);
 app.listen(3005, () => {
 	console.log("on! Port: 3005");
 });
+
+process.on("uncaughtException", (err) => {
+	if (
+		!(
+			typeof err.message === undefined ||
+			typeof err.request === undefined ||
+			typeof err.response === undefined ||
+			typeof err.errorObject === undefined
+		)
+	) {
+		console.log(err.message);
+		err.response.status(500).send(err.message);
+	} else {
+		console.log("unknown error");
+		console.log(err);
+	}
+});
