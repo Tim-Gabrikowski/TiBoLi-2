@@ -2,7 +2,7 @@
 node_modules
 
 #ignore config files
-*.conf.json
+db.conf.json
 
 *.vscode/
 
