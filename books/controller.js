@@ -157,7 +157,6 @@ function searchByAuthorAction(req, res) {
 	});
 }
 function deleteBookAction(req, res) {
-	console.log("deleteBook");
 	deleteBook(req.params.id, (err, result) => {
 		if (err)
 			throw {
