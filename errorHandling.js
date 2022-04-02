@@ -3,8 +3,9 @@ const color = require("colors");
 function handleError(err) {
 	console.log(getDate().red);
 
-	console.log(err.origin.gray);
+	console.log(err.origin + "".gray);
 	console.log(err.message);
+	console.log(err.errorObject);
 
 	if (err.message === undefined) {
 		console.log("no error message found. Here is the complete error:");

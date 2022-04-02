@@ -4,6 +4,7 @@ const {
 	newTransaction,
 	finnishTransaction,
 	countUnfinnishedTransactions,
+	getTransactionsByBenutzerNumber,
 } = require("./save");
 
 // gets  all Transactions from the db.
@@ -16,6 +17,22 @@ function getAllAction(req, res) {
 				response: res,
 				message: "Something went wrong",
 				origin: "transactions/controller/getAllAction",
+				errorObject: err,
+			};
+		result = JSON.parse(JSON.stringify(result));
+
+		res.send(result);
+	});
+}
+
+function getTransactionByUserAction(req, res) {
+	getTransactionsByBenutzerNumber(req.params.bNumber, (err, result) => {
+		if (err)
+			throw {
+				request: req,
+				response: res,
+				message: "Something went wrong",
+				origin: "transactions/controller/getTransactionsByUserAction",
 				errorObject: err,
 			};
 		result = JSON.parse(JSON.stringify(result));
@@ -94,4 +111,5 @@ module.exports = {
 	getAllAction,
 	newTransactionAction,
 	finnishTransactionAction,
+	getTransactionByUserAction,
 };

@@ -26,6 +26,9 @@ function newTransaction(transaction, callback) {
 function getTransactionsByMediaNumber(mNumber, callback) {
 	query(`SELECT * FROM transactions WHERE  mNumber = ${mNumber}`, callback);
 }
+function getTransactionsByBenutzerNumber(bNumber, callback) {
+	query(`SELECT * FROM transactions WHERE  bNumber = ${bNumber}`, callback);
+}
 function countUnfinnishedTransactions(mNumber, callback) {
 	query(
 		`SELECT COUNT(*) AS count FROM transactions WHERE backDate IS NULL AND mNumber = ${mNumber};`,
@@ -43,6 +46,7 @@ module.exports = {
 	getAll,
 	newTransaction,
 	getTransactionsByMediaNumber,
+	getTransactionsByBenutzerNumber,
 	finnishTransaction,
 	countUnfinnishedTransactions,
 };
