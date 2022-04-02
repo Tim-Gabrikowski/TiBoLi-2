@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const handleError = require("./errorHandling");
 
 //Router:
 const booksRouter = require("./books");
@@ -20,20 +21,4 @@ app.listen(3005, () => {
 	console.log("on! Port: 3005");
 });
 
-process.on("uncaughtException", (err) => {
-	if (
-		typeof err.message === undefined ||
-		typeof err.request === undefined ||
-		typeof err.response === undefined ||
-		typeof err.response.status === undefined ||
-		typeof err.response.send === undefined ||
-		typeof err.errorObject === undefined
-	) {
-		console.log("unknown error");
-		console.log(err);
-	} else {
-		console.log(err.message);
-		console.log(err.origin);
-		err.response.status(500).send(err.message);
-	}
-});
+process.on("uncaughtException", handleError);

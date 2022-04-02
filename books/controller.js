@@ -67,6 +67,7 @@ function updateAction(req, res) {
 }
 function getCopiesAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
+
 	getById(req.params.id, (err, result) => {
 		if (err)
 			throw {
@@ -82,7 +83,7 @@ function getCopiesAction(req, res) {
 			throw {
 				request: req,
 				response: res,
-				message: "Something went wrong",
+				message: "no book with id: " + req.params.id,
 				origin: "books/controller/getCopiesAction",
 				errorObject: err,
 			};
