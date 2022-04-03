@@ -29,6 +29,18 @@ function getTransactionsByMediaNumber(mNumber, callback) {
 function getTransactionsByBenutzerNumber(bNumber, callback) {
 	query(`SELECT * FROM transactions WHERE  bNumber = ${bNumber}`, callback);
 }
+function getTransactionsByUserWithBooks(bNumber, callback) {
+	query(
+		`SELECT books.title, books.author, copies.mNumber, transactions.lentDate, transactions.backDate FROM books
+			JOIN copies
+			ON copies.bookID = books.id
+			JOIN transactions
+			ON transactions.mNumber = copies.mNumber
+			Where transactions.bNumber = ${bNumber}
+			ORDER BY transactions.lentDate DESC;`,
+		callback
+	);
+}
 function countUnfinnishedTransactions(mNumber, callback) {
 	query(
 		`SELECT COUNT(*) AS count FROM transactions WHERE backDate IS NULL AND mNumber = ${mNumber};`,
@@ -47,6 +59,7 @@ module.exports = {
 	newTransaction,
 	getTransactionsByMediaNumber,
 	getTransactionsByBenutzerNumber,
+	getTransactionsByUserWithBooks,
 	finnishTransaction,
 	countUnfinnishedTransactions,
 };
