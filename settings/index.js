@@ -1,13 +1,15 @@
 const router = require("express").Router();
 const settings = require("../appSettings.json");
+const levensthein = require("js-levenshtein");
 
 router.post("/login", (req, res) => {
-	console.log("login?", req.body);
+	var dist = levensthein(req.body.password, settings.login.password);
+
 	if (req.body.password == settings.login.password) {
 		console.log("ok");
 		res.status(200).send({ ok: true });
 	} else {
-		res.send({ ok: false });
+		res.send({ ok: false, hint: dist });
 	}
 });
 
