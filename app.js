@@ -8,6 +8,7 @@ const booksRouter = require("./books");
 const copiesRouter = require("./copies");
 const usersRouter = require("./users");
 const transactionsRouter = require("./transactions");
+const settingsRouter = require("./settings");
 
 app.use(express.json());
 app.use(cors());
@@ -16,6 +17,7 @@ app.use("/books", booksRouter);
 app.use("/copies", copiesRouter);
 app.use("/users", usersRouter);
 app.use("/transactions", transactionsRouter);
+app.use("/settings", settingsRouter);
 
 app.listen(3005, () => {
 	console.log("on! Port: 3005");
