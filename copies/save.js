@@ -1,12 +1,7 @@
 var mysql = require("mysql8.0");
 const dbConf = require("../db.conf.json");
 
-var con = mysql.createConnection(dbConf);
-
-con.connect(function (err) {
-	if (err) throw err;
-	console.log("Copies connected!");
-});
+var con = mysql.createPool(dbConf);
 
 function query(sql, callback) {
 	con.query(sql, (err, result) => callback(err, result));

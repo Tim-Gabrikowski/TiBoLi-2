@@ -12,7 +12,7 @@ router.post("/login", (req, res) => {
 		console.log("ok");
 		res.status(200).send({ ok: true });
 	} else {
-		res.send({ ok: false, hint: dist });
+		res.send({ ok: false });
 	}
 });
 
