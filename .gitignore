@@ -3,6 +3,7 @@ node_modules
 
 #ignore config files
 db.conf.json
+appSettings.json
 
 *.vscode/
 
