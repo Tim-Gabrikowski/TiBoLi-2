@@ -18,4 +18,8 @@ router.post("/login", (req, res) => {
 	}
 });
 
+router.get("/documentation", (req, res) => {
+	res.sendFile(__dirname + "/documentation.md");
+});
+
 module.exports = router;
