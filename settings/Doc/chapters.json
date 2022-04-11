@@ -1,0 +1,22 @@
+[
+	{
+		"id": 0,
+		"title": "Intro",
+		"filename": "Doc-Kpt00.md"
+	},
+	{
+		"id": 1,
+		"title": "Inhalt",
+		"filename": "Doc-Kpt01.md"
+	},
+	{
+		"id": 2,
+		"title": "Bücherverwaltung",
+		"filename": "Doc-Kpt02.md"
+	},
+	{
+		"id": 3,
+		"title": "Exemplarverwaltung",
+		"filename": "Doc-Kpt03.md"
+	}
+]

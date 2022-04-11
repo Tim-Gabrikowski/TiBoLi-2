@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const settings = require("../appSettings.json");
 const levensthein = require("js-levenshtein");
+const documentationRouter = require("./Doc");
 
 router.post("/login", (req, res) => {
 	const input = `${req.body.password}`;
@@ -18,8 +19,6 @@ router.post("/login", (req, res) => {
 	}
 });
 
-router.get("/documentation", (req, res) => {
-	res.sendFile(__dirname + "/documentation.md");
-});
+router.use("/documentation", documentationRouter);
 
 module.exports = router;
