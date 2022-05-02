@@ -79,7 +79,18 @@ function createNewAction(req, res) {
 				errorObject: err,
 			};
 		user.id = JSON.parse(JSON.stringify(result)).insertId;
-		res.status(200).send(user);
+		getClass(user.classId, (err, classResult) => {
+			if (err)
+				throw {
+					request: req,
+					response: res,
+					message: "Something went wrong",
+					origin: "users/controller/getWithClassAction",
+					errorObject: err,
+				};
+			user.class = JSON.parse(JSON.stringify(classResult[0]));
+			res.status(200).send(user);
+		});
 	});
 }
 function updateAction(req, res) {
