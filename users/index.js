@@ -10,17 +10,19 @@ const {
 	deleteAction,
 } = require("./controller");
 
-router.get("/", getAllAction);
-router.get("/classes", getClassesAction);
-router.get("/:bNumber", getNumberAction);
-router.get("/:bNumber/class", getWithClassAction);
-router.put("/", (req, res) => {
+const { authenticateToken } = require("../auth");
+
+router.get("/", authenticateToken, getAllAction);
+router.get("/classes", authenticateToken, getClassesAction);
+router.get("/:bNumber", authenticateToken, getNumberAction);
+router.get("/:bNumber/class", authenticateToken, getWithClassAction);
+router.put("/", authenticateToken, (req, res) => {
 	if (req.body.id === undefined) {
 		createNewAction(req, res);
 	} else {
 		updateAction(req, res);
 	}
 });
-router.delete("/:id", deleteAction);
+router.delete("/:id", authenticateToken, deleteAction);
 
 module.exports = router;

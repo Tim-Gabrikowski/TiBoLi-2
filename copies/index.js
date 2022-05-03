@@ -6,10 +6,11 @@ const {
 	createNewAction,
 	setLifecycleAction,
 } = require("./controller");
+const { authenticateToken } = require("../auth");
 
 router.get("/", getAllAction);
 router.get("/:mNumber", getByNumberAction);
-router.post("/", createNewAction);
-router.put("/", setLifecycleAction);
+router.post("/", authenticateToken, createNewAction);
+router.put("/", authenticateToken, setLifecycleAction);
 
 module.exports = router;

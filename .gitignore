@@ -9,3 +9,6 @@ appSettings.json
 
 # sql queries
 *.sql
+
+#ignore .env
+*.env

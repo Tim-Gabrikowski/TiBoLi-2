@@ -10,12 +10,13 @@ const {
 	searchByAuthorAction,
 	deleteBookAction,
 } = require("./controller");
+const { authenticateToken } = require("../auth");
 
 router.get("/", getAllAction);
-router.get("/search/title/:term", searchByTitleAction);
-router.get("/search/author/:term", searchByAuthorAction);
+router.get("/search/title/:term", authenticateToken, searchByTitleAction);
+router.get("/search/author/:term", authenticateToken, searchByAuthorAction);
 router.get("/:id", getIdAction);
-router.put("/", (req, res) => {
+router.put("/", authenticateToken, (req, res) => {
 	if (req.body.id === undefined) {
 		createNewAction(req, res);
 	} else {
@@ -23,6 +24,6 @@ router.put("/", (req, res) => {
 	}
 });
 router.get("/:id/copies", getCopiesAction);
-router.delete("/:id", deleteBookAction);
+router.delete("/:id", authenticateToken, deleteBookAction);
 
 module.exports = router;

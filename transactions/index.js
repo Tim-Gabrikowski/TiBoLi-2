@@ -8,10 +8,16 @@ const {
 	getTransactionByUserWithBooksAction,
 } = require("./controller.js");
 
-router.get("/", getAllAction);
-router.get("/user/:bNumber", getTransactionByUserAction);
-router.get("/user/:bNumber/books", getTransactionByUserWithBooksAction);
-router.post("/lent", newTransactionAction);
-router.post("/back", finnishTransactionAction);
+const { authenticateToken } = require("../auth");
+
+router.get("/", authenticateToken, getAllAction);
+router.get("/user/:bNumber", authenticateToken, getTransactionByUserAction);
+router.get(
+	"/user/:bNumber/books",
+	authenticateToken,
+	getTransactionByUserWithBooksAction
+);
+router.post("/lent", authenticateToken, newTransactionAction);
+router.post("/back", authenticateToken, finnishTransactionAction);
 
 module.exports = router;
