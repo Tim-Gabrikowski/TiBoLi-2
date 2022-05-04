@@ -4,18 +4,22 @@ const {
 	getAllAction,
 	newTransactionAction,
 	finnishTransactionAction,
-	getTransactionByUserAction,
-	getTransactionByUserWithBooksAction,
+	getTransactionByCustomerAction,
+	getTransactionByCustomerWithBooksAction,
 } = require("./controller.js");
 
 const { authenticateToken } = require("../auth");
 
 router.get("/", authenticateToken, getAllAction);
-router.get("/user/:bNumber", authenticateToken, getTransactionByUserAction);
 router.get(
-	"/user/:bNumber/books",
+	"/customer/:bNumber",
 	authenticateToken,
-	getTransactionByUserWithBooksAction
+	getTransactionByCustomerAction
+);
+router.get(
+	"/customer/:bNumber/books",
+	authenticateToken,
+	getTransactionByCustomerWithBooksAction
 );
 router.post("/lent", authenticateToken, newTransactionAction);
 router.post("/back", authenticateToken, finnishTransactionAction);

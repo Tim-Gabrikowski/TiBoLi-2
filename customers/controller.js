@@ -6,7 +6,7 @@ const {
 	getAllNumbers,
 	getClass,
 	getClasses,
-	deleteUser,
+	deleteCustomer,
 } = require("./save");
 
 function getAllAction(req, res) {
@@ -16,7 +16,7 @@ function getAllAction(req, res) {
 				request: req,
 				response: res,
 				message: "Something went wrong",
-				origin: "users/controller/getAllAction",
+				origin: "customers/controller/getAllAction",
 				errorObject: err,
 			};
 		res.status(200).send(result);
@@ -30,66 +30,66 @@ function getNumberAction(req, res) {
 				request: req,
 				response: res,
 				message: "Something went wrong",
-				origin: "users/controller/getNumberAction",
+				origin: "customers/controller/getNumberAction",
 				errorObject: err,
 			};
 		res.status(200).send(result);
 	});
 }
 function getWithClassAction(req, res) {
-	getByNumber(req.params.bNumber, (err, userResult) => {
+	getByNumber(req.params.bNumber, (err, customerResult) => {
 		if (err)
 			throw {
 				request: req,
 				response: res,
 				message: "Something went wrong",
-				origin: "users/controller/getWithClassAction",
+				origin: "customers/controller/getWithClassAction",
 				errorObject: err,
 			};
-		user = JSON.parse(JSON.stringify(userResult));
+		customer = JSON.parse(JSON.stringify(customerResult));
 
-		getClass(user[0].classId, (err, classResult) => {
+		getClass(customer[0].classId, (err, classResult) => {
 			if (err)
 				throw {
 					request: req,
 					response: res,
 					message: "Something went wrong",
-					origin: "users/controller/getWithClassAction",
+					origin: "customers/controller/getWithClassAction",
 					errorObject: err,
 				};
-			user[0].class = JSON.parse(JSON.stringify(classResult[0]));
-			res.status(200).send(user[0]);
+			customer[0].class = JSON.parse(JSON.stringify(classResult[0]));
+			res.status(200).send(customer[0]);
 		});
 	});
 }
 function createNewAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
-	var user = {
+	var customer = {
 		vorname: req.body.vorname,
 		nachname: req.body.nachname,
 		classId: req.body.classId,
 	};
-	createNew(user, (err, result) => {
+	createNew(customer, (err, result) => {
 		if (err)
 			throw {
 				request: req,
 				response: res,
 				message: "Something went wrong",
-				origin: "users/controller/createNewAction",
+				origin: "customers/controller/createNewAction",
 				errorObject: err,
 			};
-		user.id = JSON.parse(JSON.stringify(result)).insertId;
-		getClass(user.classId, (err, classResult) => {
+		customer.id = JSON.parse(JSON.stringify(result)).insertId;
+		getClass(customer.classId, (err, classResult) => {
 			if (err)
 				throw {
 					request: req,
 					response: res,
 					message: "Something went wrong",
-					origin: "users/controller/getWithClassAction",
+					origin: "customers/controller/getWithClassAction",
 					errorObject: err,
 				};
-			user.class = JSON.parse(JSON.stringify(classResult[0]));
-			res.status(200).send(user);
+			customer.class = JSON.parse(JSON.stringify(classResult[0]));
+			res.status(200).send(customer);
 		});
 	});
 }
@@ -101,7 +101,7 @@ function updateAction(req, res) {
 				request: req,
 				response: res,
 				message: "Something went wrong",
-				origin: "users/controller/updateAction",
+				origin: "customers/controller/updateAction",
 				errorObject: err,
 			};
 		res.status(200).send(result);
@@ -115,20 +115,20 @@ function getClassesAction(req, res) {
 				request: req,
 				response: res,
 				message: "Something went wrong",
-				origin: "users/controller/getClassesAction",
+				origin: "customers/controller/getClassesAction",
 				errorObject: err,
 			};
 		res.status(200).send(result);
 	});
 }
 function deleteAction(req, res) {
-	deleteUser(req.params.id, (err, result) => {
+	deleteCustomer(req.params.id, (err, result) => {
 		if (err)
 			throw {
 				request: req,
 				response: res,
 				message: "Something went wrong",
-				origin: "users/controller/deleteAction",
+				origin: "customers/controller/deleteAction",
 				errorObject: err,
 			};
 		res.status(200).send(result);

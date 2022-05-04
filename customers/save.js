@@ -15,18 +15,18 @@ function getAll(callback) {
 function getByNumber(bNumber, callback) {
 	query(`SELECT * FROM users WHERE id = ${bNumber}`, callback);
 }
-function createNew(user, callback) {
+function createNew(customer, callback) {
 	query(
-		`INSERT INTO users (vorname, nachname, classId) VALUES ( '${user.vorname}', '${user.nachname}', ${user.classId})`,
+		`INSERT INTO users (vorname, nachname, classId) VALUES ( '${customer.vorname}', '${customer.nachname}', ${customer.classId})`,
 		callback
 	);
 }
 function getClass(classID, callback) {
 	query(`SELECT * FROM classes WHERE id = ${classID} `, callback);
 }
-function updateExisting(user, callback) {
+function updateExisting(customer, callback) {
 	query(
-		`UPDATE users SET vorname = '${user.vorname}', nachname = '${user.nachname}', classId = ${user.classId} WHERE id = ${user.id}`,
+		`UPDATE users SET vorname = '${customer.vorname}', nachname = '${customer.nachname}', classId = ${customer.classId} WHERE id = ${customer.id}`,
 		callback
 	);
 }
@@ -36,7 +36,7 @@ function getAllNumbers(callback) {
 function getClasses(callback) {
 	query(`SELECT * FROM classes`, callback);
 }
-function deleteUser(id, callback) {
+function deleteCustomer(id, callback) {
 	query(`DELETE FROM users WHERE id = ${id}`, callback);
 }
 module.exports = {
@@ -47,5 +47,5 @@ module.exports = {
 	getAllNumbers,
 	getClass,
 	getClasses,
-	deleteUser,
+	deleteCustomer,
 };

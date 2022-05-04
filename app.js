@@ -6,7 +6,7 @@ const handleError = require("./errorHandling");
 //Router:
 const booksRouter = require("./books");
 const copiesRouter = require("./copies");
-const usersRouter = require("./users");
+const customersRouter = require("./customers");
 const transactionsRouter = require("./transactions");
 const settingsRouter = require("./settings");
 const authModule = require("./auth");
@@ -16,7 +16,7 @@ app.use(cors());
 
 app.use("/books", booksRouter);
 app.use("/copies", copiesRouter);
-app.use("/users", usersRouter);
+app.use("/customers", customersRouter);
 app.use("/transactions", transactionsRouter);
 app.use("/settings", settingsRouter);
 app.use("/auth", authModule.router);

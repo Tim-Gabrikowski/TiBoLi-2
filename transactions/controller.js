@@ -5,7 +5,7 @@ const {
 	finnishTransaction,
 	countUnfinnishedTransactions,
 	getTransactionsByBenutzerNumber,
-	getTransactionsByUserWithBooks,
+	getTransactionsByCustomerWithBooks,
 } = require("./save");
 
 // gets  all Transactions from the db.
@@ -26,14 +26,14 @@ function getAllAction(req, res) {
 	});
 }
 
-function getTransactionByUserAction(req, res) {
+function getTransactionByCustomerAction(req, res) {
 	getTransactionsByBenutzerNumber(req.params.bNumber, (err, result) => {
 		if (err)
 			throw {
 				request: req,
 				response: res,
 				message: "Something went wrong",
-				origin: "transactions/controller/getTransactionsByUserAction",
+				origin: "transactions/controller/getTransactionsByCustomerAction",
 				errorObject: err,
 			};
 		result = JSON.parse(JSON.stringify(result));
@@ -41,14 +41,14 @@ function getTransactionByUserAction(req, res) {
 		res.send(result);
 	});
 }
-function getTransactionByUserWithBooksAction(req, res) {
-	getTransactionsByUserWithBooks(req.params.bNumber, (err, result) => {
+function getTransactionByCustomerWithBooksAction(req, res) {
+	getTransactionsByCustomerWithBooks(req.params.bNumber, (err, result) => {
 		if (err)
 			throw {
 				request: req,
 				response: res,
 				message: "Something went wrong",
-				origin: "transactions/controller/getTransactionByUserWithBooksAction",
+				origin: "transactions/controller/getTransactionByCustomerWithBooksAction",
 				errorObject: err,
 			};
 		result = JSON.parse(JSON.stringify(result));
@@ -64,7 +64,7 @@ function newTransactionAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
 	var transaction = {
 		transactionId: 0,
-		user: req.body.bNumber,
+		customer: req.body.bNumber,
 		copy: req.body.mNumber,
 		lentDate: Date.now(),
 	};
@@ -127,6 +127,6 @@ module.exports = {
 	getAllAction,
 	newTransactionAction,
 	finnishTransactionAction,
-	getTransactionByUserAction,
-	getTransactionByUserWithBooksAction,
+	getTransactionByCustomerAction,
+	getTransactionByCustomerWithBooksAction,
 };

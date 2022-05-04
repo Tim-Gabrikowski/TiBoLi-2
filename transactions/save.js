@@ -14,7 +14,7 @@ function getAll(callback) {
 }
 function newTransaction(transaction, callback) {
 	query(
-		`INSERT INTO transactions (bNumber, mNumber, lentDate) VALUES (${transaction.user}, ${transaction.copy}, '${transaction.lentDate}')`,
+		`INSERT INTO transactions (bNumber, mNumber, lentDate) VALUES (${transaction.customer}, ${transaction.copy}, '${transaction.lentDate}')`,
 		callback
 	);
 }
@@ -24,7 +24,7 @@ function getTransactionsByMediaNumber(mNumber, callback) {
 function getTransactionsByBenutzerNumber(bNumber, callback) {
 	query(`SELECT * FROM transactions WHERE  bNumber = ${bNumber}`, callback);
 }
-function getTransactionsByUserWithBooks(bNumber, callback) {
+function getTransactionsByCustomerWithBooks(bNumber, callback) {
 	query(
 		`SELECT books.title, books.author, copies.mNumber, transactions.lentDate, transactions.backDate FROM books
 			JOIN copies
@@ -54,7 +54,7 @@ module.exports = {
 	newTransaction,
 	getTransactionsByMediaNumber,
 	getTransactionsByBenutzerNumber,
-	getTransactionsByUserWithBooks,
+	getTransactionsByCustomerWithBooks,
 	finnishTransaction,
 	countUnfinnishedTransactions,
 };
