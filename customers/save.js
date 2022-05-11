@@ -10,14 +10,14 @@ function query(sql, callback) {
 
 //ACTIONS:
 function getAll(callback) {
-	query(`SELECT * FROM users`, callback);
+	query(`SELECT * FROM customers`, callback);
 }
 function getByNumber(bNumber, callback) {
-	query(`SELECT * FROM users WHERE id = ${bNumber}`, callback);
+	query(`SELECT * FROM customers WHERE id = ${bNumber}`, callback);
 }
 function createNew(customer, callback) {
 	query(
-		`INSERT INTO users (vorname, nachname, classId) VALUES ( '${customer.vorname}', '${customer.nachname}', ${customer.classId})`,
+		`INSERT INTO customers (vorname, nachname, classId) VALUES ( '${customer.vorname}', '${customer.nachname}', ${customer.classId})`,
 		callback
 	);
 }
@@ -26,18 +26,18 @@ function getClass(classID, callback) {
 }
 function updateExisting(customer, callback) {
 	query(
-		`UPDATE users SET vorname = '${customer.vorname}', nachname = '${customer.nachname}', classId = ${customer.classId} WHERE id = ${customer.id}`,
+		`UPDATE customers SET vorname = '${customer.vorname}', nachname = '${customer.nachname}', classId = ${customer.classId} WHERE id = ${customer.id}`,
 		callback
 	);
 }
 function getAllNumbers(callback) {
-	query(`SELECT id FROM users`, callback);
+	query(`SELECT id FROM customers`, callback);
 }
 function getClasses(callback) {
 	query(`SELECT * FROM classes`, callback);
 }
 function deleteCustomer(id, callback) {
-	query(`DELETE FROM users WHERE id = ${id}`, callback);
+	query(`DELETE FROM customers WHERE id = ${id}`, callback);
 }
 module.exports = {
 	getAll,
