@@ -4,6 +4,13 @@ require("dotenv").config();
 
 let refreshTokens = [];
 
+const login = {
+	username: process.env.LOGIN_USERNAME,
+	password: process.env.LOGIN_PASSWORD,
+};
+
+console.log(login);
+
 router.post("/refreshtoken", (req, res) => {
 	const refreshToken = req.body.token;
 	if (refreshToken == null) return res.sendStatus(401);
@@ -26,10 +33,7 @@ router.post("/login", (req, res) => {
 	const username = req.body.username;
 	const password = req.body.password;
 	const user = { username: username, password: password };
-	const login = {
-		username: process.env.LOGIN_USERNAME,
-		password: process.env.LOGIN_PASSWORD,
-	};
+
 	//check incorrect Login
 	if (user.username != login.username || user.password != login.password) {
 		return res.sendStatus(401);
