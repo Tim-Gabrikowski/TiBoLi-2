@@ -31,7 +31,9 @@ router.post("/login", (req, res) => {
 		password: process.env.LOGIN_PASSWORD,
 	};
 	//check incorrect Login
-	if (user == login) return res.sendStatus(401);
+	if (user.username != login.username || user.password != login.password) {
+		return res.sendStatus(401);
+	}
 
 	const accessToken = generateAccessToken(user);
 	const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
