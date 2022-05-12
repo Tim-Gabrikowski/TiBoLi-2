@@ -13,7 +13,7 @@ function handleError(err) {
 	}
 
 	try {
-		err.response.status(500).send(err.message);
+		err.response.status(err.statusCode | 500).send(err.message);
 	} catch (error) {
 		console.log("no response was send".red);
 	}
