@@ -1,137 +1,72 @@
-const {
-	getAll,
-	getByNumber,
-	createNew,
-	updateExisting,
-	getAllNumbers,
-	getClass,
-	getClasses,
-	deleteCustomer,
-} = require("./save");
+const database = require("../database");
 
 function getAllAction(req, res) {
-	getAll((err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "customers/controller/getAllAction",
-				errorObject: err,
-			};
-		res.status(200).send(result);
+	database.getAllCustomers().then((customers) => {
+		res.send(customers);
 	});
 }
 function getNumberAction(req, res) {
-	res.set("Access-Control-Allow-Origin", "*");
-	getByNumber(req.params.bNumber, (err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "customers/controller/getNumberAction",
-				errorObject: err,
-			};
-		res.status(200).send(result);
+	database.getCustomerById(req.params.bNumber).then((customers) => {
+		res.send(customers[0]);
 	});
 }
 function getWithClassAction(req, res) {
-	getByNumber(req.params.bNumber, (err, customerResult) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "customers/controller/getWithClassAction",
-				errorObject: err,
-			};
-		customer = JSON.parse(JSON.stringify(customerResult));
+	database.getCustomerById(req.params.bNumber).then((customers) => {
+		var customer = customers[0];
+		database.getClassById(customer.classId).then((classes) => {
+			var usersClass = classes[0];
 
-		getClass(customer[0].classId, (err, classResult) => {
-			if (err)
-				throw {
-					request: req,
-					response: res,
-					message: "Something went wrong",
-					origin: "customers/controller/getWithClassAction",
-					errorObject: err,
-				};
-			customer[0].class = JSON.parse(JSON.stringify(classResult[0]));
-			res.status(200).send(customer[0]);
+			var back = {
+				id: 1,
+				name: customer.name,
+				lastname: customer.lastname,
+				createdAt: customer.createdAt,
+				updatedAt: customer.updatedAt,
+				deletedAt: customer.deletedAt,
+				classId: customer.classId,
+				class: usersClass,
+			};
+
+			res.send(back);
 		});
 	});
 }
 function createNewAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
 	var customer = {
-		vorname: req.body.vorname,
-		nachname: req.body.nachname,
+		name: req.body.name,
+		lastname: req.body.lastname,
 		classId: req.body.classId,
 	};
-	createNew(customer, (err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "customers/controller/createNewAction",
-				errorObject: err,
-			};
-		customer.id = JSON.parse(JSON.stringify(result)).insertId;
-		getClass(customer.classId, (err, classResult) => {
-			if (err)
-				throw {
-					request: req,
-					response: res,
-					message: "Something went wrong",
-					origin: "customers/controller/getWithClassAction",
-					errorObject: err,
-				};
-			customer.class = JSON.parse(JSON.stringify(classResult[0]));
-			res.status(200).send(customer);
+	database.createNewCustomer(customer).then((newCustomer) => {
+		customer = newCustomer;
+		res.send(customer);
+		database.getClassById(customer.classId).then((classes) => {
+			customer.class = classes[0];
 		});
 	});
 }
 function updateAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
-	updateExisting(req.body, (err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "customers/controller/updateAction",
-				errorObject: err,
-			};
-		res.status(200).send(result);
+	var customer = {
+		id: req.body.id,
+		name: req.body.name,
+		lastname: req.body.lastname,
+		classId: req.body.classId,
+	};
+	database.updateCustomer(customer).then((editCustomer) => {
+		res.send(editCustomer);
 	});
 }
 
 function getClassesAction(req, res) {
-	getClasses((err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "customers/controller/getClassesAction",
-				errorObject: err,
-			};
-		res.status(200).send(result);
+	database.getAllClasses().then((classes) => {
+		res.send(classes);
 	});
 }
 function deleteAction(req, res) {
-	deleteCustomer(req.params.id, (err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "customers/controller/deleteAction",
-				errorObject: err,
-			};
-		res.status(200).send(result);
+	database.deleteCustomer(req.params.id).then((result) => {
+		res.send("ok");
 	});
 }
 

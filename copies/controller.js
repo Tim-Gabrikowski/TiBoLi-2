@@ -1,3 +1,4 @@
+const database = require("../database");
 const {
 	getAll,
 	getByNumber,
@@ -21,50 +22,23 @@ const dataTemplate = {
 };
 
 function getAllAction(req, res) {
-	res.set("Access-Control-Allow-Origin", "*");
-	getAll((err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "copies/controller/getAllAction",
-				errorObject: err,
-			};
-
-		res.status(200).send(result);
+	database.getAllCopies().then((copies) => {
+		res.send(copies);
 	});
 }
 function getByNumberAction(req, res) {
-	res.set("Access-Control-Allow-Origin", "*");
-	getByNumber(req.params.mNumber, (err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "copies/controller/getByNumberAction",
-				errorObject: err,
-			};
-		result = JSON.parse(JSON.stringify(result));
-		getBookFromId(result[0].bookId, (err, results) => {
-			if (err)
-				throw {
-					request: req,
-					response: res,
-					message: "Something went wrong",
-					origin: "copies/controller/getByNumberAction",
-					errorObject: err,
-				};
-			results = JSON.parse(JSON.stringify(results));
+	database.getCopyByNumber(req.params.mNumber).then((copies) => {
+		var copy = copies[0];
+		database.getBookById(copy[0].bookId).then((books) => {
+			var book = books[0];
+
 			var obj = dataTemplate;
+			obj.mNumber = copy.mNumber;
+			obj.bookId = copy.bookId;
+			obj.lifecycle = copy.lifecycle;
 
-			obj.mNumber = result[0].mNumber;
-			obj.bookId = result[0].bookId;
-			obj.lifecycle = result[0].lifecycle;
-
-			obj._LINK.book.title = results[0].title;
-			obj._LINK.book.author = results[0].author;
+			obj._LINK.book.title = book.title;
+			obj._LINK.book.author = book.author;
 
 			res.status(200).send(obj);
 		});
@@ -72,57 +46,29 @@ function getByNumberAction(req, res) {
 }
 function createNewAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
-	amount = req.body.amount;
-	getAllNumbers((err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "copies/controller/createNewAction",
-				errorObject: err,
-			};
+	var amount = req.body.amount;
+	var bookId = req.body.bookId;
+	var totalDone = 0;
+	var copies = [];
 
-		var numbers = JSON.stringify(result);
-		var numbers = JSON.parse(numbers);
-		var count = numbers.length;
-		var copies = [];
-
-		for (var i = 0; i < amount; i++) {
-			var mediaNumber = 111111111 + count + i;
-
-			var copy = {
-				mNumber: mediaNumber,
-				bookId: req.body.bookId,
-				lifecycle: 1,
-			};
+	for (var i = 0; i < amount; i++) {
+		database.createNewCopy(bookId).then((copy) => {
 			copies.push(copy);
-		}
-		createNew(copies, (err, result) => {
-			if (err)
-				throw {
-					request: req,
-					response: res,
-					message: "Something went wrong",
-					origin: "copies/controller/createNewAction",
-					errorObject: err,
-				};
-			res.status(200).send(copies);
+			totalDone++;
+			if (totalDone == amount) {
+				res.send(copies);
+			}
 		});
-	});
+	}
 }
 function setLifecycleAction(req, res) {
-	setCopyLifecycle(req.body.mNumber, req.body.lifecycle, (err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "copies/controller/setLifeCycleAction",
-				errorObject: err,
-			};
-		res.status(200).send(result);
-	});
+	database
+		.updateCopyLifecycle(req.body.mNumber, req.body.lifecycle)
+		.then((copy) => {
+			database.getCopyByNumber(req.body.mNumber).then((copies) => {
+				res.send(copies[0]);
+			});
+		});
 }
 module.exports = {
 	getAllAction,

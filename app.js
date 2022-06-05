@@ -2,8 +2,9 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const handleError = require("./errorHandling");
+require("dotenv").config();
 
-//Router:
+//Routers:
 const booksRouter = require("./books");
 const copiesRouter = require("./copies");
 const customersRouter = require("./customers");
@@ -21,8 +22,12 @@ app.use("/transactions", transactionsRouter);
 app.use("/settings", settingsRouter);
 app.use("/auth", authModule.router);
 
-app.listen(3005, () => {
-	console.log("on! Port: 3005");
-});
+if (process.env.SERVER_IS_MODULE == "false") {
+	app.listen(process.env.SERVER_PORT, () => {
+		console.log("on! Port:", process.env.SERVER_PORT);
+	});
+} else if (process.env.SERVER_IS_MODULE == "true") {
+	module.exports = app;
+}
 
 process.on("uncaughtException", handleError);

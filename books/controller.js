@@ -9,166 +9,87 @@ const {
 	deleteBook,
 } = require("./save");
 
+const database = require("../database");
+
 function getAllAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
-	getAll((err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "books/controller/getAllAction",
-				errorObject: err,
-			};
-		res.status(200).send(result);
+
+	database.getAllBooks().then((books) => {
+		res.send(books);
 	});
 }
 function getIdAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
-	getById(req.params.id, (err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "books/controller/getIdAction",
-				errorObject: err,
-			};
-		res.status(200).send(result);
+
+	database.getBookById(req.params.id).then((book) => {
+		res.send(book[0]);
 	});
 }
 function createNewAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
-	createNew(req.body, (err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "books/controller/createNewAction",
-				errorObject: err,
-			};
-		res.status(200).send(result);
+
+	const { title, author } = req.body;
+
+	database.createNewBook({ title: title, author: author }).then((book) => {
+		res.send(book);
 	});
 }
 function updateAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
-	updateExisting(req.body, (err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "books/controller/updateAction",
-				errorObject: err,
-			};
-		res.status(200).send(result);
+
+	const newBook = req.body;
+
+	database.updateExistingBook(newBook).then((nBook) => {
+		database.getBookById(newBook.id).then((book) => {
+			res.send(book[0]);
+		});
 	});
 }
 function getCopiesAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
 
-	getById(req.params.id, (err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "books/controller/getCopiesAction",
-				errorObject: err,
+	database.getBookById(req.params.id).then((book) => {
+		database.getCopiesFromBook(book[0].id).then((copies) => {
+			var back = {
+				id: book[0].id,
+				title: book[0].title,
+				author: book[0].author,
+				createdAt: book[0].createdAt,
+				updatedAt: book[0].updatedAt,
+				deletedAt: book[0].deletedAt,
+				copies: copies,
 			};
-		var data = JSON.parse(JSON.stringify(result));
-
-		if (data.length == 0)
-			throw {
-				request: req,
-				response: res,
-				message: "no book with id: " + req.params.id,
-				origin: "books/controller/getCopiesAction",
-				errorObject: err,
-			};
-
-		var body = {
-			id: data[0].id,
-			title: data[0].title,
-			author: data[0].author,
-			copies: [],
-		};
-		getCopiesFromBook(req.params.id, (err, results) => {
-			if (err)
-				throw {
-					request: req,
-					response: res,
-					message: "Something went wrong",
-					origin: "books/controller/getCopiesAction",
-					errorObject: err,
-				};
-			body.copies = JSON.parse(JSON.stringify(results));
-
-			res.status(200).send(body);
+			res.send(back);
 		});
 	});
 }
 function searchByTitleAction(req, res) {
-	getAll((err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "books/controller/searchByTitleAction",
-				errorObject: err,
-			};
-		const searchTerm = req.params.term;
+	const searchTerm = req.params.term;
+	const maxOps = 0.3 * searchTerm.length + 3;
 
-		result = JSON.parse(JSON.stringify(result));
-		body = [];
-		maxOps = 0.4 * searchTerm.length + 3;
-		result.forEach((element) => {
+	database.getAllBooks().then((books) => {
+		var back = books.filter((element) => {
 			var dist = levenshtein(element.title, searchTerm);
-			if (dist <= maxOps) {
-				body.push(element);
-			}
+			return dist <= maxOps;
 		});
-		res.status(200).send(body);
+		res.send(back);
 	});
 }
 function searchByAuthorAction(req, res) {
-	getAll((err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "books/controller/searchByAuthorAction",
-				errorObject: err,
-			};
-		const searchTerm = req.params.term;
+	const searchTerm = req.params.term;
+	const maxOps = 0.3 * searchTerm.length + 3;
 
-		result = JSON.parse(JSON.stringify(result));
-		body = [];
-		maxOps = 0.4 * searchTerm.length + 3;
-		result.forEach((element) => {
+	database.getAllBooks().then((books) => {
+		var back = books.filter((element) => {
 			var dist = levenshtein(element.author, searchTerm);
-			if (dist <= maxOps) {
-				body.push(element);
-			}
+			return dist <= maxOps;
 		});
-		res.status(200).send(body);
+		res.send(back);
 	});
 }
 function deleteBookAction(req, res) {
-	deleteBook(req.params.id, (err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "books/controller/deleteBookAction",
-				errorObject: err,
-			};
-
-		res.status(200).send(result);
+	database.deleteBook(req.params.id).then((result) => {
+		res.send("ok");
 	});
 }
 

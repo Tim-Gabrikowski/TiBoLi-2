@@ -1,60 +1,26 @@
-const { mysqlDate, mysqlDateToString } = require("./date");
-const {
-	getAll,
-	newTransaction,
-	finnishTransaction,
-	countUnfinnishedTransactions,
-	getTransactionsByBenutzerNumber,
-	getTransactionsByCustomerWithBooks,
-} = require("./save");
+const database = require("../database");
 
 // gets  all Transactions from the db.
 function getAllAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
-	getAll((err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "transactions/controller/getAllAction",
-				errorObject: err,
-			};
-		result = JSON.parse(JSON.stringify(result));
-
-		res.send(result);
+	database.getAllTransactions().then((transactions) => {
+		res.send(transactions);
 	});
 }
 
 function getTransactionByCustomerAction(req, res) {
-	getTransactionsByBenutzerNumber(req.params.bNumber, (err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "transactions/controller/getTransactionsByCustomerAction",
-				errorObject: err,
-			};
-		result = JSON.parse(JSON.stringify(result));
-
-		res.send(result);
-	});
+	database
+		.getTransactionsByCustomer(req.params.bNumber)
+		.then((transactions) => {
+			res.send(transactions);
+		});
 }
 function getTransactionByCustomerWithBooksAction(req, res) {
-	getTransactionsByCustomerWithBooks(req.params.bNumber, (err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "transactions/controller/getTransactionByCustomerWithBooksAction",
-				errorObject: err,
-			};
-		result = JSON.parse(JSON.stringify(result));
-
-		res.send(result);
-	});
+	database
+		.getTransactionByCustomerWithBooks(req.params.bNumber)
+		.then((transactions) => {
+			res.send(transactions);
+		});
 }
 
 //create new Transaction.
@@ -68,40 +34,18 @@ function newTransactionAction(req, res) {
 		copy: req.body.mNumber,
 		lentDate: Date.now(),
 	};
-	countUnfinnishedTransactions(transaction.copy, (err, results) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "transactions/controller/newTransactionAction",
-				errorObject: err,
-			};
-
-		results = JSON.parse(JSON.stringify(results));
-
-		if (results[0].count != 0) {
-			res.status(200).send({ status: 2, message: "ausgeliehen!" });
-		} else {
-			newTransaction(transaction, (err, result) => {
-				if (err) {
-					res.send({
-						status: 4,
-						message: "fehler ist aufgetreten",
-					});
-				}
-				if (!err) {
-					result = JSON.parse(JSON.stringify(result));
-
-					transaction.transactionId = result.insertId;
-					res.status(200).send({
-						status: 0,
-						message: "ok",
-						transaction: transaction,
-					});
-				}
-			});
+	database.countUnfinnishedTransactions(transaction.copy).then((count) => {
+		if (count != 0) {
+			res.send({ status: 2, message: "ausgeliehen!" });
+			return;
 		}
+		database.createNewTransaction(transaction).then((newTransaction) => {
+			res.send({
+				status: 0,
+				message: "ok",
+				transaction: newTransaction,
+			});
+		});
 	});
 }
 
@@ -109,16 +53,7 @@ function newTransactionAction(req, res) {
 function finnishTransactionAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
 	const { mNumber } = req.body;
-	finnishTransaction(mNumber, Date.now(), (err, result) => {
-		if (err)
-			throw {
-				request: req,
-				response: res,
-				message: "Something went wrong",
-				origin: "transactions/controller/finnishTransactionAction",
-				errorObject: err,
-			};
-
+	database.finnishTransaction(mNumber, Date.now()).then((result) => {
 		res.status(200).send({ status: 0, message: "ok" });
 	});
 }
