@@ -1,12 +1,4 @@
 const database = require("../database");
-const {
-	getAll,
-	getByNumber,
-	createNew,
-	getAllNumbers,
-	getBookFromId,
-	setCopyLifecycle,
-} = require("./save");
 
 const dataTemplate = {
 	mNumber: 123456789,
