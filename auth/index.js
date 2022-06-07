@@ -1,10 +1,6 @@
 const router = require("express").Router();
 const jwt = require("jsonwebtoken");
-const {
-	getUserByUsername,
-	getAllUsernames,
-	registerNewUser,
-} = require("./database");
+
 const database = require("../database");
 require("dotenv").config();
 
