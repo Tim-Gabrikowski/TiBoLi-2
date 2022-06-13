@@ -17,7 +17,7 @@ function getWithClassAction(req, res) {
 			var usersClass = classes[0];
 
 			var back = {
-				id: 1,
+				id: customer.id,
 				name: customer.name,
 				lastname: customer.lastname,
 				createdAt: customer.createdAt,
@@ -40,9 +40,18 @@ function createNewAction(req, res) {
 	};
 	database.createNewCustomer(customer).then((newCustomer) => {
 		customer = newCustomer;
-		res.send(customer);
 		database.getClassById(customer.classId).then((classes) => {
-			customer.class = classes[0];
+			var customersClass = classes[0];
+
+			var back = {
+				id: customer.id,
+				name: customer.name,
+				lastname: customer.lastname,
+				classId: customer.classId,
+				class: customersClass,
+			};
+
+			res.send(back);
 		});
 	});
 }

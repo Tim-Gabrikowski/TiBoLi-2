@@ -80,7 +80,7 @@ function searchByAuthorAction(req, res) {
 }
 function deleteBookAction(req, res) {
 	database.deleteBook(req.params.id).then((result) => {
-		res.send("ok");
+		res.send({ ok: true });
 	});
 }
 
