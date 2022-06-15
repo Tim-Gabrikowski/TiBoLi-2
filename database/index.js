@@ -227,12 +227,14 @@ function finnishTransaction(mNum, date) {
 function getUserByUsername(username) {
 	return User.findAll({ where: { username: username } });
 }
-function createNewUser(user) {
-	return User.create({
-		username: user.username,
-		password_hash: user.password_hash,
-		perm_group: user.perm_group,
+function getUserByCustomer(customerId) {
+	return User.findAll({
+		where: { customerId: customerId },
+		attributes: ["id", "username", "perm_group", "customerId"],
 	});
+}
+function createNewUser(user) {
+	return User.create(user);
 }
 
 module.exports = {
@@ -267,4 +269,5 @@ module.exports = {
 	//users:
 	getUserByUsername,
 	createNewUser,
+	getUserByCustomer,
 };

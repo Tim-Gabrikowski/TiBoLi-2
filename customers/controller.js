@@ -16,18 +16,34 @@ function getWithClassAction(req, res) {
 		database.getClassById(customer.classId).then((classes) => {
 			var usersClass = classes[0];
 
-			var back = {
-				id: customer.id,
-				name: customer.name,
-				lastname: customer.lastname,
-				createdAt: customer.createdAt,
-				updatedAt: customer.updatedAt,
-				deletedAt: customer.deletedAt,
-				classId: customer.classId,
-				class: usersClass,
-			};
-
-			res.send(back);
+			database.getUserByCustomer(customer.id).then((users) => {
+				if (users.length == 0) {
+					var back = {
+						id: customer.id,
+						name: customer.name,
+						lastname: customer.lastname,
+						createdAt: customer.createdAt,
+						updatedAt: customer.updatedAt,
+						deletedAt: customer.deletedAt,
+						classId: customer.classId,
+						class: usersClass,
+					};
+				} else {
+					var user = users[0];
+					var back = {
+						id: customer.id,
+						name: customer.name,
+						lastname: customer.lastname,
+						createdAt: customer.createdAt,
+						updatedAt: customer.updatedAt,
+						deletedAt: customer.deletedAt,
+						classId: customer.classId,
+						class: usersClass,
+						user: user,
+					};
+				}
+				res.send(back);
+			});
 		});
 	});
 }

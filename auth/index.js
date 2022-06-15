@@ -79,7 +79,9 @@ router.post("/register", authenticateToken, (req, res) => {
 		username: input.username,
 		password_hash: hash(input.password),
 		perm_group: input.perm_group || 0,
+		customerId: null,
 	};
+	if (input.customerId != null) user.customerId = input.customerId;
 	database
 		.createNewUser(user)
 		.then((newUser) => {
