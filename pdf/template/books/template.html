@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<meta charset="UTF-8" />
+		<title></title>
+		<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+		<link
+			rel="stylesheet"
+			type="text/css"
+			href="http://--HOST--/pdf/style/books"
+		/>
+		<script>
+			Number.prototype.zeroPadding = function () {
+				var ret = "" + this.valueOf();
+				return ret.length == 1 ? "0" + ret : ret;
+			};
+		</script>
+	</head>
+	<body>
+		<!-- <div id="infobox"></div> -->
+		<div class="container">
+			<table>
+				<tbody>
+					<tr>
+						<td>
+							<p id="title-00">&nbsp;</p>
+							<p id="author-00">&nbsp;</p>
+							<img id="barcode-00" />
+						</td>
+						<td>
+							<p id="title-01">&nbsp;</p>
+							<p id="author-01">&nbsp;</p>
+							<img id="barcode-01" />
+						</td>
+						<td>
+							<p id="title-02">&nbsp;</p>
+							<p id="author-02">&nbsp;</p>
+							<img id="barcode-02" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p id="title-10">&nbsp;</p>
+							<p id="author-10">&nbsp;</p>
+							<img id="barcode-10" />
+						</td>
+						<td>
+							<p id="title-11">&nbsp;</p>
+							<p id="author-11">&nbsp;</p>
+							<img id="barcode-11" />
+						</td>
+						<td>
+							<p id="title-12">&nbsp;</p>
+							<p id="author-12">&nbsp;</p>
+							<img id="barcode-12" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p id="title-20">&nbsp;</p>
+							<p id="author-20">&nbsp;</p>
+							<img id="barcode-20" />
+						</td>
+						<td>
+							<p id="title-21">&nbsp;</p>
+							<p id="author-21">&nbsp;</p>
+							<img id="barcode-21" />
+						</td>
+						<td>
+							<p id="title-22">&nbsp;</p>
+							<p id="author-22">&nbsp;</p>
+							<img id="barcode-22" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p id="title-30">&nbsp;</p>
+							<p id="author-30">&nbsp;</p>
+							<img id="barcode-30" />
+						</td>
+						<td>
+							<p id="title-31">&nbsp;</p>
+							<p id="author-31">&nbsp;</p>
+							<img id="barcode-31" />
+						</td>
+						<td>
+							<p id="title-32">&nbsp;</p>
+							<p id="author-32">&nbsp;</p>
+							<img id="barcode-32" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p id="title-40">&nbsp;</p>
+							<p id="author-40">&nbsp;</p>
+							<img id="barcode-40" />
+						</td>
+						<td>
+							<p id="title-41">&nbsp;</p>
+							<p id="author-41">&nbsp;</p>
+							<img id="barcode-41" />
+						</td>
+						<td>
+							<p id="title-42">&nbsp;</p>
+							<p id="author-42">&nbsp;</p>
+							<img id="barcode-42" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p id="title-50">&nbsp;</p>
+							<p id="author-50">&nbsp;</p>
+							<img id="barcode-50" />
+						</td>
+						<td>
+							<p id="title-51">&nbsp;</p>
+							<p id="author-51">&nbsp;</p>
+							<img id="barcode-51" />
+						</td>
+						<td>
+							<p id="title-52">&nbsp;</p>
+							<p id="author-52">&nbsp;</p>
+							<img id="barcode-52" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p id="title-60">&nbsp;</p>
+							<p id="author-60">&nbsp;</p>
+							<img id="barcode-60" />
+						</td>
+						<td>
+							<p id="title-61">&nbsp;</p>
+							<p id="author-61">&nbsp;</p>
+							<img id="barcode-61" />
+						</td>
+						<td>
+							<p id="title-62">&nbsp;</p>
+							<p id="author-62">&nbsp;</p>
+							<img id="barcode-62" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<script>
+			var infobox = document.getElementById("infobox");
+			var data = {
+				books: [
+					{
+						position: 11,
+						title: "inputData.title",
+						author: "inputData.author",
+						mNumber: 123456789,
+					},
+					{
+						position: 12,
+						title: "inputData.title.2",
+						author: "inputData.author.2",
+						mNumber: 234567890,
+					},
+				],
+			};
+
+			data = "-INPUT-";
+			// data = JSON.parse(data);
+
+			try {
+				for (var i = 0; i < data.books.length; i++) {
+					document.getElementById(
+						"title-" + data.books[i].position
+					).innerText = data.books[i].title;
+
+					document.getElementById(
+						"author-" + data.books[i].position
+					).innerText = data.books[i].author;
+
+					JsBarcode(
+						"#barcode-" + data.books[i].position,
+						data.books[i].mNumber,
+						{
+							height: 30,
+							width: 2,
+						}
+					);
+				}
+			} catch (error) {}
+		</script>
+	</body>
+</html>

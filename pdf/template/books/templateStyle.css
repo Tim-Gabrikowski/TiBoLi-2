@@ -1,0 +1,46 @@
+* {
+	border: 0;
+	margin: 0;
+	padding: 0;
+	border: 0mm;
+}
+
+@page {
+	height: 297mm;
+	width: 210mm;
+}
+
+body {
+	height: 296mm;
+	width: 210mm;
+	padding: 0mm;
+}
+
+.container {
+	position: absolute;
+	top: 14mm;
+	right: 7.9mm;
+	bottom: 13mm;
+	left: 8.6mm;
+}
+
+td {
+	margin: 0mm;
+	padding: 0mm;
+	outline-color: white;
+	outline-width: 1px;
+	outline-style: solid;
+	height: 38mm;
+	width: 63.5mm;
+
+	text-align: center;
+	overflow: hidden;
+}
+
+#infobox {
+	position: fixed;
+	top: 0mm;
+	left: 0mm;
+
+	padding: 2mm;
+}

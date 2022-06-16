@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<meta charset="UTF-8" />
+		<title></title>
+		<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+		<link
+			rel="stylesheet"
+			type="text/css"
+			href="http://--HOST--/pdf/style/customers"
+		/>
+		<script>
+			Number.prototype.zeroPadding = function () {
+				var ret = "" + this.valueOf();
+				return ret.length == 1 ? "0" + ret : ret;
+			};
+		</script>
+	</head>
+	<body>
+		<!-- <div id="infobox"></div> -->
+		<div class="container">
+			<table>
+				<tbody>
+					<tr>
+						<td>
+							<p id="name-00">&nbsp;</p>
+							<p id="class-00">&nbsp;</p>
+							<img id="barcode-00" />
+						</td>
+						<td>
+							<p id="name-01">&nbsp;</p>
+							<p id="class-01">&nbsp;</p>
+							<img id="barcode-01" />
+						</td>
+						<td>
+							<p id="name-02">&nbsp;</p>
+							<p id="class-02">&nbsp;</p>
+							<img id="barcode-02" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p id="name-10">&nbsp;</p>
+							<p id="class-10">&nbsp;</p>
+							<img id="barcode-10" />
+						</td>
+						<td>
+							<p id="name-11">&nbsp;</p>
+							<p id="class-11">&nbsp;</p>
+							<img id="barcode-11" />
+						</td>
+						<td>
+							<p id="name-12">&nbsp;</p>
+							<p id="class-12">&nbsp;</p>
+							<img id="barcode-12" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p id="name-20">&nbsp;</p>
+							<p id="class-20">&nbsp;</p>
+							<img id="barcode-20" />
+						</td>
+						<td>
+							<p id="name-21">&nbsp;</p>
+							<p id="class-21">&nbsp;</p>
+							<img id="barcode-21" />
+						</td>
+						<td>
+							<p id="name-22">&nbsp;</p>
+							<p id="class-22">&nbsp;</p>
+							<img id="barcode-22" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p id="name-30">&nbsp;</p>
+							<p id="class-30">&nbsp;</p>
+							<img id="barcode-30" />
+						</td>
+						<td>
+							<p id="name-31">&nbsp;</p>
+							<p id="class-31">&nbsp;</p>
+							<img id="barcode-31" />
+						</td>
+						<td>
+							<p id="name-32">&nbsp;</p>
+							<p id="class-32">&nbsp;</p>
+							<img id="barcode-32" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p id="name-40">&nbsp;</p>
+							<p id="class-40">&nbsp;</p>
+							<img id="barcode-40" />
+						</td>
+						<td>
+							<p id="name-41">&nbsp;</p>
+							<p id="class-41">&nbsp;</p>
+							<img id="barcode-41" />
+						</td>
+						<td>
+							<p id="name-42">&nbsp;</p>
+							<p id="class-42">&nbsp;</p>
+							<img id="barcode-42" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p id="name-50">&nbsp;</p>
+							<p id="class-50">&nbsp;</p>
+							<img id="barcode-50" />
+						</td>
+						<td>
+							<p id="name-51">&nbsp;</p>
+							<p id="class-51">&nbsp;</p>
+							<img id="barcode-51" />
+						</td>
+						<td>
+							<p id="name-52">&nbsp;</p>
+							<p id="class-52">&nbsp;</p>
+							<img id="barcode-52" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p id="name-60">&nbsp;</p>
+							<p id="class-60">&nbsp;</p>
+							<img id="barcode-60" />
+						</td>
+						<td>
+							<p id="name-61">&nbsp;</p>
+							<p id="class-61">&nbsp;</p>
+							<img id="barcode-61" />
+						</td>
+						<td>
+							<p id="name-62">&nbsp;</p>
+							<p id="class-62">&nbsp;</p>
+							<img id="barcode-62" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<script>
+			var infobox = document.getElementById("infobox");
+			var data = {
+				customers: [
+					{
+						id: 11111,
+						vorname: "Tim",
+						nachname: "Gabrikowski",
+						class: {
+							class: 9,
+							letter: "b",
+						},
+					},
+				],
+			};
+
+			data = "-INPUT-";
+			// data = JSON.parse(data);
+
+			try {
+				for (var i = 0; i < data.customers.length; i++) {
+					var nameString = `${data.customers[i].lastname}, ${data.customers[i].name}`;
+					document.getElementById(
+						"name-" + data.customers[i].position
+					).innerText = nameString;
+
+					var classString = `${data.customers[i].class.year}${data.customers[i].class.letter}`;
+					document.getElementById(
+						"class-" + data.customers[i].position
+					).innerText = classString;
+
+					JsBarcode(
+						"#barcode-" + data.customers[i].position,
+						data.customers[i].id,
+						{
+							height: 30,
+							width: 2,
+						}
+					);
+				}
+			} catch (error) {}
+		</script>
+	</body>
+</html>
