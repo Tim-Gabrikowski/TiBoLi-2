@@ -236,6 +236,9 @@ function getUserByCustomer(customerId) {
 function createNewUser(user) {
 	return User.create(user);
 }
+function updateUser(user) {
+	return User.update(user, { where: { id: user.id } });
+}
 
 module.exports = {
 	//books
@@ -270,4 +273,5 @@ module.exports = {
 	getUserByUsername,
 	createNewUser,
 	getUserByCustomer,
+	updateUser,
 };

@@ -93,6 +93,26 @@ router.post("/register", authenticateToken, (req, res) => {
 			console.log(error);
 		});
 });
+router.put("/reset", authenticateToken, (req, res) => {
+	const { username, newPassword } = req.body;
+	if (req.user.perm_group < 2)
+		return res.status(403).send({ message: "not allowed to do that" });
+
+	database.getUserByUsername(username).then((users) => {
+		if (users.length < 1)
+			return res
+				.status(400)
+				.send({ message: "no user with that username" });
+		var user = users[0].dataValues;
+
+		var password_hash = hash(newPassword);
+		user.password_hash = password_hash;
+
+		database.updateUser(user).then((_) => {
+			res.send(user);
+		});
+	});
+});
 
 function generateAccessToken(user) {
 	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
