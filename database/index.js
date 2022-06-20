@@ -59,13 +59,28 @@ const Transaction = con.define(
 	},
 	{ paranoid: true }
 );
+const Whish = con.define(
+	"whish",
+	{
+		title: {
+			type: Secuelize.STRING,
+		},
+		author: {
+			type: Secuelize.STRING,
+		},
+		hint: {
+			type: Secuelize.TEXT,
+		},
+	},
+	{ paranoid: false }
+);
 const User = con.define(
 	"user",
 	{
 		username: {
 			type: Secuelize.STRING,
-			unique: true,
-			allowNull: false,
+			unique: "username",
+			// allowNull: false,
 		},
 		password_hash: {
 			type: Secuelize.STRING,
@@ -240,6 +255,14 @@ function updateUser(user) {
 	return User.update(user, { where: { id: user.id } });
 }
 
+/* Whishes */
+function createWhish(whish) {
+	return Whish.create(whish);
+}
+function getWhishes() {
+	return Whish.findAll();
+}
+
 module.exports = {
 	//books
 	getAllBooks,
@@ -274,4 +297,7 @@ module.exports = {
 	createNewUser,
 	getUserByCustomer,
 	updateUser,
+	//whishes:
+	createWhish,
+	getWhishes,
 };

@@ -12,6 +12,7 @@ const transactionsRouter = require("./transactions");
 const settingsRouter = require("./settings");
 const authModule = require("./auth");
 const pdfRouter = require("./pdf");
+const bookwhishRouter = require("./bookwhish");
 
 app.use(express.json());
 app.use(cors());
@@ -23,6 +24,7 @@ app.use("/transactions", transactionsRouter);
 app.use("/settings", settingsRouter);
 app.use("/auth", authModule.router);
 app.use("/pdf", pdfRouter);
+app.use("/whish", bookwhishRouter);
 
 if (process.env.SERVER_IS_MODULE == "false") {
 	app.listen(process.env.SERVER_PORT, () => {
