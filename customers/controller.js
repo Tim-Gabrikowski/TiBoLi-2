@@ -38,7 +38,11 @@ function getWithClassAction(req, res) {
 						updatedAt: customer.updatedAt,
 						deletedAt: customer.deletedAt,
 						classId: customer.classId,
-						class: usersClass,
+						class: {
+							id: usersClass.id,
+							year: usersClass.year,
+							letter: usersClass.letter,
+						},
 						user: user,
 					};
 				}
@@ -84,11 +88,6 @@ function updateAction(req, res) {
 	});
 }
 
-function getClassesAction(req, res) {
-	database.getAllClasses().then((classes) => {
-		res.send(classes);
-	});
-}
 function deleteAction(req, res) {
 	database.deleteCustomer(req.params.id).then((result) => {
 		res.send("ok");
@@ -101,6 +100,5 @@ module.exports = {
 	createNewAction,
 	updateAction,
 	getWithClassAction,
-	getClassesAction,
 	deleteAction,
 };

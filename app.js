@@ -13,6 +13,7 @@ const settingsRouter = require("./settings");
 const authModule = require("./auth");
 const pdfRouter = require("./pdf");
 const bookwhishRouter = require("./bookwhish");
+const classesRouter = require("./classes");
 
 app.use(express.json());
 app.use(cors());
@@ -25,6 +26,7 @@ app.use("/settings", settingsRouter);
 app.use("/auth", authModule.router);
 app.use("/pdf", pdfRouter);
 app.use("/whish", bookwhishRouter);
+app.use("/classes", classesRouter);
 
 if (process.env.SERVER_IS_MODULE == "false") {
 	app.listen(process.env.SERVER_PORT, () => {

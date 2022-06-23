@@ -203,7 +203,15 @@ function getAllClasses() {
 	return Class.findAll({ attributes: ["id", "year", "letter"] });
 }
 function getClassById(id) {
-	return Class.findAll({ where: { id: id } });
+	return Class.findAll({
+		where: { id: id },
+	});
+}
+function createClass(newClass) {
+	return Class.create(newClass);
+}
+function updateClass(nClass) {
+	return Class.update(nClass, { where: { id: nClass.id } });
 }
 
 /* Transactions */
@@ -285,6 +293,8 @@ module.exports = {
 	//classes
 	getAllClasses,
 	getClassById,
+	createClass,
+	updateClass,
 	//transactions:
 	getAllTransactions,
 	getTransactionsByCustomer,
