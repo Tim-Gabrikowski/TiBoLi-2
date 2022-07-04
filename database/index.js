@@ -1,8 +1,8 @@
 const { Op } = require("sequelize");
-const Secuelize = require("sequelize");
+const Sequelize = require("sequelize");
 require("dotenv").config();
 
-var con = new Secuelize(
+var con = new Sequelize(
 	process.env.DATABASE_NAME,
 	process.env.DATABASE_USERNAME,
 	process.env.DATABASE_PASSWORD,
@@ -18,8 +18,13 @@ var con = new Secuelize(
 const Book = con.define(
 	"book",
 	{
-		title: Secuelize.STRING,
-		author: Secuelize.STRING,
+		title: Sequelize.STRING,
+		author: Sequelize.STRING,
+		subtitle: Sequelize.STRING,
+		isbn: Sequelize.STRING,
+		publisher: Sequelize.STRING,
+		year: Sequelize.STRING,
+		age: Sequelize.STRING,
 	},
 	{ paranoid: true }
 );
@@ -27,35 +32,36 @@ const Copy = con.define(
 	"copy",
 	{
 		id: {
-			type: Secuelize.INTEGER,
+			type: Sequelize.INTEGER,
 			primaryKey: true,
 			autoIncrement: true,
 		},
-		lifecycle: Secuelize.INTEGER,
+		lifecycle: Sequelize.INTEGER,
 	},
 	{ paranoid: true, initialAutoIncrement: 1111 }
 );
 const Customer = con.define(
 	"customer",
 	{
-		name: Secuelize.STRING,
-		lastname: Secuelize.STRING,
+		name: Sequelize.STRING,
+		lastname: Sequelize.STRING,
 	},
 	{ paranoid: true }
 );
 const Class = con.define(
 	"class",
 	{
-		year: Secuelize.INTEGER,
-		letter: Secuelize.STRING,
+		year: Sequelize.INTEGER,
+		letter: Sequelize.STRING,
+		teachers: Sequelize.STRING,
 	},
 	{ paranoid: true }
 );
 const Transaction = con.define(
 	"transaction",
 	{
-		lentDate: Secuelize.BIGINT,
-		backDate: Secuelize.BIGINT,
+		lentDate: Sequelize.BIGINT,
+		backDate: Sequelize.BIGINT,
 	},
 	{ paranoid: true }
 );
@@ -63,13 +69,13 @@ const Whish = con.define(
 	"whish",
 	{
 		title: {
-			type: Secuelize.STRING,
+			type: Sequelize.STRING,
 		},
 		author: {
-			type: Secuelize.STRING,
+			type: Sequelize.STRING,
 		},
 		hint: {
-			type: Secuelize.TEXT,
+			type: Sequelize.TEXT,
 		},
 	},
 	{ paranoid: false }
@@ -78,18 +84,21 @@ const User = con.define(
 	"user",
 	{
 		username: {
-			type: Secuelize.STRING,
+			type: Sequelize.STRING,
 			unique: "username",
 			// allowNull: false,
 		},
 		password_hash: {
-			type: Secuelize.STRING,
+			type: Sequelize.STRING,
 			allowNull: false,
 		},
 		perm_group: {
-			type: Secuelize.INTEGER,
+			type: Sequelize.INTEGER,
 			allowNull: false,
 			defaultValue: 0,
+		},
+		mail: {
+			type: Sequelize.STRING,
 		},
 	},
 	{ paranoid: true }
@@ -113,7 +122,7 @@ Transaction.belongsTo(Customer);
 Class.hasMany(Customer);
 Customer.belongsTo(Class);
 
-//Customer - User
+// Customer - User
 Customer.hasOne(User);
 User.belongsTo(Customer);
 
@@ -130,14 +139,7 @@ function createNewBook(book) {
 	return Book.create(book);
 }
 function updateExistingBook(newBook) {
-	return Book.update(
-		{ title: newBook.title, author: newBook.author },
-		{
-			where: {
-				id: newBook.id,
-			},
-		}
-	);
+	return Book.update(newBook, { where: { id: newBook.id } });
 }
 function deleteBook(id) {
 	return Book.destroy({ where: { id: id } });
@@ -185,14 +187,7 @@ function createNewCustomer(customer) {
 	});
 }
 function updateCustomer(customer) {
-	return Customer.update(
-		{
-			name: customer.name,
-			lastname: customer.lastname,
-			classId: customer.classId,
-		},
-		{ where: { id: customer.id } }
-	);
+	return Customer.update(customer, { where: { id: customer.id } });
 }
 function deleteCustomer(id) {
 	return Customer.destroy({ where: { id: id } });

@@ -16,7 +16,7 @@ async function printPDF(contractID) {
 	const browser = await puppeteer.launch({ headless: true });
 	const page = await browser.newPage();
 	await page.goto(
-		"http://" + process.env.HOST_NAME + "/api/pdf/contract/" + contractID,
+		"http://" + process.env.HOST_NAME + "/pdf/contract/" + contractID,
 		{
 			waitUntil: "networkidle0",
 		}

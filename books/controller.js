@@ -19,9 +19,7 @@ function getIdAction(req, res) {
 function createNewAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
 
-	const { title, author } = req.body;
-
-	database.createNewBook({ title: title, author: author }).then((book) => {
+	database.createNewBook(req.body).then((book) => {
 		res.send(book);
 	});
 }
@@ -39,18 +37,15 @@ function updateAction(req, res) {
 function getCopiesAction(req, res) {
 	res.set("Access-Control-Allow-Origin", "*");
 
-	database.getBookById(req.params.id).then((book) => {
-		database.getCopiesFromBook(book[0].id).then((copies) => {
-			var back = {
-				id: book[0].id,
-				title: book[0].title,
-				author: book[0].author,
-				createdAt: book[0].createdAt,
-				updatedAt: book[0].updatedAt,
-				deletedAt: book[0].deletedAt,
-				copies: copies,
-			};
-			res.send(back);
+	database.getBookById(req.params.id).then((books) => {
+		if (books.length != 1)
+			return res
+				.status(400)
+				.send({ message: "no / multiple Books with that Id" });
+		var book = books[0].dataValues;
+		database.getCopiesFromBook(book.id).then((copies) => {
+			book.copies = copies;
+			res.send(book);
 		});
 	});
 }

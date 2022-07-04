@@ -11,6 +11,8 @@ const {
 	deleteBookAction,
 } = require("./controller");
 const { authenticateToken } = require("../auth");
+const isbnRouter = require("./isbn");
+router.use("/isbn", isbnRouter);
 
 router.get("/", getAllAction);
 router.get("/search/title/:term", authenticateToken, searchByTitleAction);
