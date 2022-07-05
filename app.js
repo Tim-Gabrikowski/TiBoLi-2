@@ -26,12 +26,8 @@ app.use("/pdf", pdfRouter);
 app.use("/whish", bookwhishRouter);
 app.use("/classes", classesRouter);
 
-if (process.env.SERVER_IS_MODULE == "false") {
-	app.listen(process.env.SERVER_PORT, () => {
-		console.log("on! Port:", process.env.SERVER_PORT);
-	});
-} else if (process.env.SERVER_IS_MODULE == "true") {
-	module.exports = app;
-}
+app.listen(process.env.SERVER_PORT, () => {
+	console.log("on! Port:", process.env.SERVER_PORT);
+});
 
 process.on("uncaughtException", handleError);
