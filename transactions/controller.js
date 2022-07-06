@@ -2,6 +2,9 @@ const database = require("../database");
 
 // gets  all Transactions from the db.
 function getAllAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
+
 	res.set("Access-Control-Allow-Origin", "*");
 	database.getAllTransactions().then((transactions) => {
 		res.send(transactions);
@@ -9,6 +12,9 @@ function getAllAction(req, res) {
 }
 
 function getTransactionByCustomerAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
+
 	database
 		.getTransactionsByCustomer(req.params.bNumber)
 		.then((transactions) => {
@@ -16,6 +22,9 @@ function getTransactionByCustomerAction(req, res) {
 		});
 }
 function getTransactionByCustomerWithBooksAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
+
 	database
 		.getTransactionByCustomerWithBooks(req.params.bNumber)
 		.then((transactions) => {
@@ -27,6 +36,9 @@ function getTransactionByCustomerWithBooksAction(req, res) {
 //create new Transaction object, check if copy is not given back yet.
 //write new Transaction to db and send it back to client.
 function newTransactionAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
+
 	res.set("Access-Control-Allow-Origin", "*");
 	var transaction = {
 		transactionId: 0,
@@ -51,6 +63,9 @@ function newTransactionAction(req, res) {
 
 //mark transition with backDate in db to mark it as back.
 function finnishTransactionAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
+
 	res.set("Access-Control-Allow-Origin", "*");
 	const { mNumber } = req.body;
 	database.finnishTransaction(mNumber, Date.now()).then((result) => {

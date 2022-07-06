@@ -242,6 +242,11 @@ function finnishTransaction(mNum, date) {
 }
 
 /* Users */
+function getAllUsers() {
+	return User.findAll({
+		attributes: ["id", "username", "perm_group", "customerId"],
+	});
+}
 function getUserByUsername(username) {
 	return User.findAll({ where: { username: username } });
 }
@@ -298,6 +303,7 @@ module.exports = {
 	createNewTransaction,
 	finnishTransaction,
 	//users:
+	getAllUsers,
 	getUserByUsername,
 	createNewUser,
 	getUserByCustomer,

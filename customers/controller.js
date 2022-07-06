@@ -1,16 +1,25 @@
 const database = require("../database");
 
 function getAllAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
+
 	database.getAllCustomers().then((customers) => {
 		res.send(customers);
 	});
 }
 function getNumberAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
+
 	database.getCustomerById(req.params.bNumber).then((customers) => {
 		res.send(customers[0]);
 	});
 }
 function getWithClassAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
+
 	database.getCustomerById(req.params.bNumber).then((customers) => {
 		var customer = customers[0];
 		database.getClassById(customer.classId).then((classes) => {
@@ -52,6 +61,9 @@ function getWithClassAction(req, res) {
 	});
 }
 function createNewAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
+
 	res.set("Access-Control-Allow-Origin", "*");
 	var customer = {
 		name: req.body.name,
@@ -76,6 +88,9 @@ function createNewAction(req, res) {
 	});
 }
 function updateAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
+
 	res.set("Access-Control-Allow-Origin", "*");
 	var customer = {
 		id: req.body.id,
@@ -89,6 +104,9 @@ function updateAction(req, res) {
 }
 
 function deleteAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
+
 	database.deleteCustomer(req.params.id).then((result) => {
 		res.send("ok");
 	});

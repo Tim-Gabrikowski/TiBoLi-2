@@ -8,8 +8,8 @@ const {
 } = require("./controller");
 const { authenticateToken } = require("../auth");
 
-router.get("/", getAllAction);
-router.get("/:mNumber", getByNumberAction);
+router.get("/", authenticateToken, getAllAction);
+router.get("/:mNumber", authenticateToken, getByNumberAction);
 router.post("/", authenticateToken, createNewAction);
 router.put("/", authenticateToken, setLifecycleAction);
 

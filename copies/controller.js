@@ -14,11 +14,17 @@ const dataTemplate = {
 };
 
 function getAllAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
+
 	database.getAllCopies().then((copies) => {
 		res.send(copies);
 	});
 }
 function getByNumberAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
+
 	database.getCopyByNumber(req.params.mNumber).then((copies) => {
 		var copy = copies[0];
 		database.getBookById(copy[0].bookId).then((books) => {
@@ -37,6 +43,9 @@ function getByNumberAction(req, res) {
 	});
 }
 function createNewAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
+
 	res.set("Access-Control-Allow-Origin", "*");
 	var amount = req.body.amount;
 	var bookId = req.body.bookId;
@@ -54,6 +63,9 @@ function createNewAction(req, res) {
 	}
 }
 function setLifecycleAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
+
 	database
 		.updateCopyLifecycle(req.body.mNumber, req.body.lifecycle)
 		.then((copy) => {

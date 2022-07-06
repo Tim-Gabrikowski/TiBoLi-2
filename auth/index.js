@@ -19,7 +19,13 @@ router.post("/refreshtoken", (req, res) => {
 	jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
 		if (err) return res.sendStatus(403);
 
-		const accessToken = generateAccessToken(user);
+		var newUser = {
+			id: user.id,
+			username: user.username,
+			mail: user.mail,
+			perm_group: user.perm_group,
+		};
+		const accessToken = generateAccessToken(newUser);
 
 		res.json({ accessToken: accessToken, refreshToken: refreshToken });
 	});
@@ -114,22 +120,32 @@ router.put("/reset", authenticateToken, (req, res) => {
 	});
 });
 
+router.get("/users", authenticateToken, (req, res) => {
+	if (req.user.perm_group != 4)
+		return res.status(403).send({ message: "Not allowed" });
+
+	database.getAllUsers().then((users) => {
+		res.send(users);
+	});
+});
+
 function generateAccessToken(user) {
 	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-		expiresIn: "5m",
+		expiresIn: "1m",
 	});
 }
 function authenticateToken(req, res, next) {
 	const authHeader = req.headers["authorization"];
 	const token = authHeader && authHeader.split(" ")[1];
-	if (token == null) return res.sendStatus(401);
+	if (token == null)
+		return res.status(401).send({ token: false, valid: false });
 
 	if (token == "AdminDuOpfa!") {
 		req.user = { username: "master", perm_group: 4 };
 		next();
 	} else {
 		jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-			if (err) return res.sendStatus(403);
+			if (err) return res.status(401).send({ token: true, valid: false });
 			req.user = user;
 			next();
 		});

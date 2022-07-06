@@ -1,8 +1,9 @@
-const { stringify } = require("nodemon/lib/utils");
 const levenshtein = require("js-levenshtein");
 const database = require("../database");
 
 function getAllAction(req, res) {
+	if (req.user.perm_group < 0)
+		return res.status(403).send({ message: "not allowed" });
 	res.set("Access-Control-Allow-Origin", "*");
 
 	database.getAllBooks().then((books) => {
@@ -10,6 +11,8 @@ function getAllAction(req, res) {
 	});
 }
 function getIdAction(req, res) {
+	if (req.user.perm_group < 0)
+		return res.status(403).send({ message: "not allowed" });
 	res.set("Access-Control-Allow-Origin", "*");
 
 	database.getBookById(req.params.id).then((book) => {
@@ -17,6 +20,8 @@ function getIdAction(req, res) {
 	});
 }
 function createNewAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
 	res.set("Access-Control-Allow-Origin", "*");
 
 	database.createNewBook(req.body).then((book) => {
@@ -24,6 +29,8 @@ function createNewAction(req, res) {
 	});
 }
 function updateAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
 	res.set("Access-Control-Allow-Origin", "*");
 
 	const newBook = req.body;
@@ -35,6 +42,8 @@ function updateAction(req, res) {
 	});
 }
 function getCopiesAction(req, res) {
+	if (req.user.perm_group < 0)
+		return res.status(403).send({ message: "not allowed" });
 	res.set("Access-Control-Allow-Origin", "*");
 
 	database.getBookById(req.params.id).then((books) => {
@@ -50,6 +59,9 @@ function getCopiesAction(req, res) {
 	});
 }
 function searchByTitleAction(req, res) {
+	if (req.user.perm_group < 0)
+		return res.status(403).send({ message: "not allowed" });
+
 	const searchTerm = req.params.term;
 	const maxOps = 0.3 * searchTerm.length + 3;
 
@@ -62,6 +74,9 @@ function searchByTitleAction(req, res) {
 	});
 }
 function searchByAuthorAction(req, res) {
+	if (req.user.perm_group < 0)
+		return res.status(403).send({ message: "not allowed" });
+
 	const searchTerm = req.params.term;
 	const maxOps = 0.3 * searchTerm.length + 3;
 
@@ -74,6 +89,8 @@ function searchByAuthorAction(req, res) {
 	});
 }
 function deleteBookAction(req, res) {
+	if (req.user.perm_group < 3)
+		return res.status(403).send({ message: "not allowed" });
 	database.deleteBook(req.params.id).then((result) => {
 		res.send({ ok: true });
 	});
