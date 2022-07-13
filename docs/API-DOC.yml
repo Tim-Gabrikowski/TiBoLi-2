@@ -1,0 +1,59 @@
+openapi: "3.0.2"
+info:
+    title: TiBoLi
+    version: "1.0"
+servers:
+    - url: https://tiboli.tech4web.de/api
+tags:
+    - name: Books
+      description: Everything about books
+      externalDocs:
+          description: Find out more
+          url: http://swagger.io
+paths:
+    /books:
+        get:
+            tags:
+                - Books
+            responses:
+                "200":
+                    description: OK
+                "401":
+                    description: No valid authorisation
+        post:
+            tags:
+                - Books
+            requestBody:
+                $ref: "#/components/requestBodies/Book"
+
+            responses:
+                "200":
+                    description: OK
+
+components:
+    requestBodies:
+        Book:
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Book"
+    schemas:
+        Book:
+            type: object
+            properties:
+                id:
+                    type: integer
+                isbn:
+                    type: string
+                title:
+                    type: string
+                subtitle:
+                    type: string
+                author:
+                    type: string
+                publisher:
+                    type: string
+                year:
+                    type: string
+                age:
+                    type: string

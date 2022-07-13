@@ -101,7 +101,7 @@ const User = con.define(
 			type: Sequelize.STRING,
 		},
 	},
-	{ paranoid: true }
+	{ paranoid: false }
 );
 
 /* Connections */
@@ -247,6 +247,12 @@ function getAllUsers() {
 		attributes: ["id", "username", "perm_group", "customerId"],
 	});
 }
+function getUserById(id) {
+	return User.findAll({
+		where: { id: id },
+		include: [{ model: Customer, include: [Class] }],
+	});
+}
 function getUserByUsername(username) {
 	return User.findAll({ where: { username: username } });
 }
@@ -262,7 +268,9 @@ function createNewUser(user) {
 function updateUser(user) {
 	return User.update(user, { where: { id: user.id } });
 }
-
+function deleteUser(id) {
+	return User.destroy({ where: { id: id } });
+}
 /* Whishes */
 function createWhish(whish) {
 	return Whish.create(whish);
@@ -304,10 +312,12 @@ module.exports = {
 	finnishTransaction,
 	//users:
 	getAllUsers,
+	getUserById,
 	getUserByUsername,
 	createNewUser,
 	getUserByCustomer,
 	updateUser,
+	deleteUser,
 	//whishes:
 	createWhish,
 	getWhishes,

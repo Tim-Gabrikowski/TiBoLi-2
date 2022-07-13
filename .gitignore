@@ -12,3 +12,4 @@ appSettings.json
 
 #ignore .env
 *.env
+.env.docker

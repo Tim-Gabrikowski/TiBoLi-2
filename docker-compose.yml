@@ -1,0 +1,19 @@
+version: "3"
+services:
+    api:
+        image: timgabhh/tiboli-be
+        ports:
+            - "3005:3005"
+        environment:
+            ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
+            REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
+            DATABASE_NAME: ${DATABASE_NAME}
+            DATABASE_HOST: ${DATABASE_HOST}
+            DATABASE_PORT: ${DATABASE_PORT}
+            DATABASE_USERNAME: ${DATABASE_USERNAME}
+            DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+            HOST_NAME: ${HOST_NAME}
+    fe:
+        image: timgabhh/tiboli-fe
+        ports:
+            - "4201:80"

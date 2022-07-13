@@ -26,6 +26,10 @@ app.use("/pdf", pdfRouter);
 app.use("/whish", bookwhishRouter);
 app.use("/classes", classesRouter);
 
+app.get("/", (req, res) => {
+	res.send({ ok: true, message: "Welcome!" });
+});
+
 app.listen(process.env.SERVER_PORT, () => {
 	console.log("on! Port:", process.env.SERVER_PORT);
 });

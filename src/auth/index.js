@@ -1,15 +1,11 @@
 const router = require("express").Router();
 const jwt = require("jsonwebtoken");
+const { hash, generateSecurePassword } = require("./toolbox");
 
 const database = require("../database");
 require("dotenv").config();
 
 let refreshTokens = [];
-
-const { createHash } = require("crypto");
-function hash(input) {
-	return createHash("sha256").update(input).digest("hex");
-}
 
 router.post("/refreshtoken", (req, res) => {
 	const refreshToken = req.body.token;
@@ -100,16 +96,20 @@ router.post("/register", authenticateToken, (req, res) => {
 		});
 });
 router.put("/reset", authenticateToken, (req, res) => {
-	const { username, newPassword } = req.body;
+	const { id, newPassword } = req.body;
 	if (req.user.perm_group < 2)
 		return res.status(403).send({ message: "not allowed to do that" });
 
-	database.getUserByUsername(username).then((users) => {
+	database.getUserById(id).then((users) => {
 		if (users.length < 1)
-			return res
-				.status(400)
-				.send({ message: "no user with that username" });
+			return res.status(400).send({ message: "no user with that id" });
 		var user = users[0].dataValues;
+
+		if (typeof req.body.oldPassword === "undefined")
+			return res.status(400).send({ message: "no password" });
+
+		if (user.password_hash != hash(req.body.oldPassword))
+			return res.status(400).send({ message: "wrong password" });
 
 		var password_hash = hash(newPassword);
 		user.password_hash = password_hash;
@@ -119,13 +119,94 @@ router.put("/reset", authenticateToken, (req, res) => {
 		});
 	});
 });
+router.put("/adminreset", authenticateToken, (req, res) => {
+	var { id, newPassword } = req.body;
+	if (req.user.perm_group != 4)
+		return res.status(403).send({ message: "not allowed to do that" });
 
+	database.getUserById(id).then((users) => {
+		if (users.length < 1)
+			return res.status(400).send({ message: "no user with that id" });
+		var user = users[0].dataValues;
+
+		if (!newPassword) {
+			newPassword = generateSecurePassword();
+		}
+		var password_hash = hash(newPassword);
+		user.password_hash = password_hash;
+
+		database.updateUser(user).then((_) => {
+			res.send({ user: user, newPassword: newPassword });
+		});
+	});
+});
+router.get("/randompassword", (req, res) => {
+	res.send({ password: generateSecurePassword() });
+});
 router.get("/users", authenticateToken, (req, res) => {
 	if (req.user.perm_group != 4)
 		return res.status(403).send({ message: "Not allowed" });
 
 	database.getAllUsers().then((users) => {
 		res.send(users);
+	});
+});
+router.get("/user/:id", authenticateToken, (req, res) => {
+	if (req.user.perm_group != 4)
+		return res.status(403).send({ message: "Not allowed" });
+
+	database.getUserById(req.params.id).then((users) => {
+		res.send(users[0].dataValues);
+	});
+});
+router.put("/updateUsername", authenticateToken, (req, res) => {
+	if (req.user.perm_group != 4)
+		return res.status(403).send({ message: "Not allowed" });
+
+	const { id, username } = req.body;
+	database.getUserById(id).then((users) => {
+		var user = users[0].dataValues;
+		user.username = username;
+		database
+			.updateUser(user)
+			.then((_) => {
+				res.send({
+					id: user.id,
+					username: user.username,
+					perm_group: user.perm_group,
+					customerId: user.customerId,
+				});
+			})
+			.catch((error) => {
+				if (error.name == "SequelizeUniqueConstraintError")
+					return res.status(406).send({ message: "Username taken" }); // not acceptable
+			});
+	});
+});
+router.put("/updatepermission", authenticateToken, (req, res) => {
+	if (req.user.perm_group != 4)
+		return res.status(403).send({ message: "Not allowed" });
+
+	const { id, permission } = req.body;
+	database.getUserById(id).then((users) => {
+		if (users.length != 1)
+			return res.status(400).send({ message: "no user with that id" });
+
+		var user = users[0].dataValues;
+
+		user.perm_group = permission;
+
+		database.updateUser(user).then((_) => {
+			res.send(user);
+		});
+	});
+});
+router.delete("/deleteuser/:id", authenticateToken, (req, res) => {
+	if (req.user.perm_group != 4)
+		return res.status(403).send({ message: "Not allowed" });
+
+	database.deleteUser(req.params.id).then((_) => {
+		res.send({ success: true, message: "deleted" });
 	});
 });
 
