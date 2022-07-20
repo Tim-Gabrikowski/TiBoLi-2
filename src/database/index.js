@@ -2,17 +2,12 @@ const { Op } = require("sequelize");
 const Sequelize = require("sequelize");
 require("dotenv").config();
 
-var con = new Sequelize(
-	process.env.DATABASE_NAME,
-	process.env.DATABASE_USERNAME,
-	process.env.DATABASE_PASSWORD,
-	{
-		port: process.env.DATABASE_PORT,
-		host: process.env.DATABASE_HOST,
-		logging: console.log,
-		dialect: "mysql",
-	}
-);
+var con = new Sequelize(process.env.DATABASE_NAME, process.env.DATABASE_USERNAME, process.env.DATABASE_PASSWORD, {
+	port: process.env.DATABASE_PORT,
+	host: process.env.DATABASE_HOST,
+	logging: console.log,
+	dialect: "mysql",
+});
 
 /* Models */
 const Book = con.define(
@@ -65,8 +60,8 @@ const Transaction = con.define(
 	},
 	{ paranoid: true }
 );
-const Whish = con.define(
-	"whish",
+const Wish = con.define(
+	"wish",
 	{
 		title: {
 			type: Sequelize.STRING,
@@ -235,10 +230,7 @@ function createNewTransaction(transaction) {
 	});
 }
 function finnishTransaction(mNum, date) {
-	return Transaction.update(
-		{ backDate: date },
-		{ where: { copyId: mNum, backDate: { [Op.is]: null } } }
-	);
+	return Transaction.update({ backDate: date }, { where: { copyId: mNum, backDate: { [Op.is]: null } } });
 }
 
 /* Users */
@@ -271,12 +263,12 @@ function updateUser(user) {
 function deleteUser(id) {
 	return User.destroy({ where: { id: id } });
 }
-/* Whishes */
-function createWhish(whish) {
-	return Whish.create(whish);
+/* Wishes */
+function createWish(wish) {
+	return Wish.create(wish);
 }
-function getWhishes() {
-	return Whish.findAll();
+function getWishes() {
+	return Wish.findAll();
 }
 
 module.exports = {
@@ -318,7 +310,7 @@ module.exports = {
 	getUserByCustomer,
 	updateUser,
 	deleteUser,
-	//whishes:
-	createWhish,
-	getWhishes,
+	//wishes:
+	createWish,
+	getWishes,
 };

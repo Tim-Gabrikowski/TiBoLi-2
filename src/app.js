@@ -11,7 +11,7 @@ const customersRouter = require("./customers");
 const transactionsRouter = require("./transactions");
 const authModule = require("./auth");
 const pdfRouter = require("./pdf");
-const bookwhishRouter = require("./bookwhish");
+const bookwishRouter = require("./bookwish");
 const classesRouter = require("./classes");
 
 app.use(express.json());
@@ -23,7 +23,7 @@ app.use("/customers", customersRouter);
 app.use("/transactions", transactionsRouter);
 app.use("/auth", authModule.router);
 app.use("/pdf", pdfRouter);
-app.use("/whish", bookwhishRouter);
+app.use("/wish", bookwishRouter);
 app.use("/classes", classesRouter);
 
 app.get("/", (req, res) => {
