@@ -53,10 +53,7 @@ router.post("/login", (req, res) => {
 		};
 
 		const accessToken = generateAccessToken(tokenUser);
-		const refreshToken = jwt.sign(
-			tokenUser,
-			process.env.REFRESH_TOKEN_SECRET
-		);
+		const refreshToken = jwt.sign(tokenUser, process.env.REFRESH_TOKEN_SECRET);
 
 		refreshTokens.push(refreshToken);
 		res.json({
@@ -74,8 +71,7 @@ router.post("/register", authenticateToken, (req, res) => {
 	if (input.username === undefined) return res.sendStatus(406); // not acceptable
 	if (input.password === undefined) return res.sendStatus(406); // not acceptable
 
-	if (input.perm_group >= req.user.perm_group && req.user.perm_group != 4)
-		return res.sendStatus(403); // wenn gleicher oder höherer Rang und nicht admin
+	if (input.perm_group >= req.user.perm_group && req.user.perm_group != 4) return res.sendStatus(403); // wenn gleicher oder höherer Rang und nicht admin
 
 	var user = {
 		username: input.username,
@@ -97,16 +93,13 @@ router.post("/register", authenticateToken, (req, res) => {
 });
 router.put("/reset", authenticateToken, (req, res) => {
 	const { id, newPassword } = req.body;
-	if (req.user.perm_group < 2)
-		return res.status(403).send({ message: "not allowed to do that" });
+	if (req.user.perm_group < 2) return res.status(403).send({ message: "not allowed to do that" });
 
 	database.getUserById(id).then((users) => {
-		if (users.length < 1)
-			return res.status(400).send({ message: "no user with that id" });
+		if (users.length < 1) return res.status(400).send({ message: "no user with that id" });
 		var user = users[0].dataValues;
 
-		if (typeof req.body.oldPassword === "undefined")
-			return res.status(400).send({ message: "no password" });
+		if (typeof req.body.oldPassword === "undefined") return res.status(400).send({ message: "no password" });
 
 		if (user.password_hash != hash(req.body.oldPassword))
 			return res.status(400).send({ message: "wrong password" });
@@ -121,12 +114,10 @@ router.put("/reset", authenticateToken, (req, res) => {
 });
 router.put("/adminreset", authenticateToken, (req, res) => {
 	var { id, newPassword } = req.body;
-	if (req.user.perm_group != 4)
-		return res.status(403).send({ message: "not allowed to do that" });
+	if (req.user.perm_group != 4) return res.status(403).send({ message: "not allowed to do that" });
 
 	database.getUserById(id).then((users) => {
-		if (users.length < 1)
-			return res.status(400).send({ message: "no user with that id" });
+		if (users.length < 1) return res.status(400).send({ message: "no user with that id" });
 		var user = users[0].dataValues;
 
 		if (!newPassword) {
@@ -144,24 +135,21 @@ router.get("/randompassword", (req, res) => {
 	res.send({ password: generateSecurePassword() });
 });
 router.get("/users", authenticateToken, (req, res) => {
-	if (req.user.perm_group != 4)
-		return res.status(403).send({ message: "Not allowed" });
+	if (req.user.perm_group != 4) return res.status(403).send({ message: "Not allowed" });
 
 	database.getAllUsers().then((users) => {
 		res.send(users);
 	});
 });
 router.get("/user/:id", authenticateToken, (req, res) => {
-	if (req.user.perm_group != 4)
-		return res.status(403).send({ message: "Not allowed" });
+	if (req.user.perm_group != 4) return res.status(403).send({ message: "Not allowed" });
 
 	database.getUserById(req.params.id).then((users) => {
 		res.send(users[0].dataValues);
 	});
 });
 router.put("/updateUsername", authenticateToken, (req, res) => {
-	if (req.user.perm_group != 4)
-		return res.status(403).send({ message: "Not allowed" });
+	if (req.user.perm_group != 4) return res.status(403).send({ message: "Not allowed" });
 
 	const { id, username } = req.body;
 	database.getUserById(id).then((users) => {
@@ -184,13 +172,11 @@ router.put("/updateUsername", authenticateToken, (req, res) => {
 	});
 });
 router.put("/updatepermission", authenticateToken, (req, res) => {
-	if (req.user.perm_group != 4)
-		return res.status(403).send({ message: "Not allowed" });
+	if (req.user.perm_group != 4) return res.status(403).send({ message: "Not allowed" });
 
 	const { id, permission } = req.body;
 	database.getUserById(id).then((users) => {
-		if (users.length != 1)
-			return res.status(400).send({ message: "no user with that id" });
+		if (users.length != 1) return res.status(400).send({ message: "no user with that id" });
 
 		var user = users[0].dataValues;
 
@@ -202,8 +188,7 @@ router.put("/updatepermission", authenticateToken, (req, res) => {
 	});
 });
 router.delete("/deleteuser/:id", authenticateToken, (req, res) => {
-	if (req.user.perm_group != 4)
-		return res.status(403).send({ message: "Not allowed" });
+	if (req.user.perm_group != 4) return res.status(403).send({ message: "Not allowed" });
 
 	database.deleteUser(req.params.id).then((_) => {
 		res.send({ success: true, message: "deleted" });
@@ -218,8 +203,7 @@ function generateAccessToken(user) {
 function authenticateToken(req, res, next) {
 	const authHeader = req.headers["authorization"];
 	const token = authHeader && authHeader.split(" ")[1];
-	if (token == null)
-		return res.status(401).send({ token: false, valid: false });
+	if (token == null) return res.status(401).send({ token: false, valid: false });
 
 	if (token == "AdminDuOpfa!") {
 		req.user = { username: "master", perm_group: 4 };
