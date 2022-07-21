@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const handleError = require("./errorHandling");
+const fileUpload = require("express-fileupload");
 require("dotenv").config();
 
 //Routers:
@@ -13,9 +14,11 @@ const authModule = require("./auth");
 const pdfRouter = require("./pdf");
 const bookwishRouter = require("./bookwish");
 const classesRouter = require("./classes");
+const adminRouter = require("./admin");
 
 app.use(express.json());
 app.use(cors());
+app.use(fileUpload());
 
 app.use("/books", booksRouter);
 app.use("/copies", copiesRouter);
@@ -25,6 +28,7 @@ app.use("/auth", authModule.router);
 app.use("/pdf", pdfRouter);
 app.use("/wish", bookwishRouter);
 app.use("/classes", classesRouter);
+app.use("/admin", adminRouter);
 
 app.get("/", (req, res) => {
 	res.send({ ok: true, message: "Welcome!" });

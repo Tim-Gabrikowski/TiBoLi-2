@@ -3,6 +3,7 @@ const router = express.Router();
 const { authenticateToken } = require("../auth");
 const database = require("../database");
 const fs = require("fs");
+const { backup, getProgress, createZipArchive } = require("./backup");
 
 router.get("/", (req, res) => {
 	res.send({ message: "ok" });
@@ -95,6 +96,18 @@ router.post("/upload", async (req, res) => {
 	} catch (err) {
 		res.status(500).send(err);
 	}
+});
+
+router.get("/backup", (req, res) => {
+	backup();
+	res.send({ message: "will do so" });
+});
+router.get("/backup/progress", (req, res) => {
+	res.send(getProgress());
+});
+router.get("/backup/file", async (req, res) => {
+	await createZipArchive();
+	res.sendFile(__dirname + "/backup/backup.zip");
 });
 
 module.exports = router;

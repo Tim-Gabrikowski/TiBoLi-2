@@ -18,6 +18,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"adm-zip": "^0.5.9",
 		"color": "^4.2.1",
 		"colors": "^1.4.0",
 		"cors": "^2.8.5",

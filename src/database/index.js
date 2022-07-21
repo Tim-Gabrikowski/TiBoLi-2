@@ -271,6 +271,11 @@ function getWishes() {
 	return Wish.findAll();
 }
 
+// delete everything
+function clearDatabase() {
+	return con.sync({ force: true });
+}
+
 module.exports = {
 	//books
 	getAllBooks,
@@ -313,4 +318,6 @@ module.exports = {
 	//wishes:
 	createWish,
 	getWishes,
+	//admin stuff
+	clearDatabase,
 };
