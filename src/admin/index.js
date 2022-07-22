@@ -68,7 +68,8 @@ router.post("/import/customers", authenticateToken, (req, res) => {
 	});
 });
 
-router.post("/upload", async (req, res) => {
+router.post("/upload", authenticateToken, async (req, res) => {
+	if (req.user.perm_group != 4) return res.status(403).send({ message: "not allowed" });
 	try {
 		if (!req.files) {
 			res.send({
@@ -98,16 +99,42 @@ router.post("/upload", async (req, res) => {
 	}
 });
 
-router.get("/backup", (req, res) => {
+router.get("/backup", authenticateToken, (req, res) => {
+	if (req.user.perm_group != 4) return res.status(403).send({ message: "not allowed" });
 	backup();
 	res.send({ message: "will do so" });
 });
-router.get("/backup/progress", (req, res) => {
+router.get("/backup/progress", authenticateToken, (req, res) => {
+	if (req.user.perm_group != 4) return res.status(403).send({ message: "not allowed" });
 	res.send(getProgress());
 });
-router.get("/backup/file", async (req, res) => {
+router.get("/backup/file", authenticateToken, async (req, res) => {
+	if (req.user.perm_group != 4) return res.status(403).send({ message: "not allowed" });
 	await createZipArchive();
 	res.sendFile(__dirname + "/backup/backup.zip");
+});
+
+router.get("/setting/:key", (req, res) => {
+	database.getSetting(req.params.key).then((settings) => {
+		if (settings.length < 1) return res.status(400).send({ key: req.params.key, value: "undefined" });
+		var setting = settings[0].dataValues;
+		res.send(setting);
+	});
+});
+router.post("/setting", authenticateToken, (req, res) => {
+	if (req.user.perm_group != 4) return res.status(403).send({ message: "not allowed" });
+
+	database.createSetting({ key: req.body.key, value: req.body.value }).then((setting) => {
+		res.send(setting);
+	});
+});
+router.put("/setting", authenticateToken, (req, res) => {
+	if (req.user.perm_group != 4) return res.status(403).send({ message: "not allowed" });
+
+	var setting = { id: req.body.id, key: req.body.key, value: req.body.value };
+	database.updateSetting(setting).then((_) => {
+		res.send(setting);
+	});
 });
 
 module.exports = router;

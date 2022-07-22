@@ -57,6 +57,7 @@ const Transaction = con.define(
 	{
 		lentDate: Sequelize.BIGINT,
 		backDate: Sequelize.BIGINT,
+		maxBack: Sequelize.BIGINT,
 	},
 	{ paranoid: true }
 );
@@ -98,6 +99,15 @@ const User = con.define(
 	},
 	{ paranoid: false }
 );
+
+const Setting = con.define("setting", {
+	key: {
+		type: Sequelize.STRING,
+	},
+	value: {
+		type: Sequelize.STRING,
+	},
+});
 
 /* Connections */
 
@@ -222,15 +232,22 @@ function countUnfinnishedTransactions(mNum) {
 		where: { copyId: mNum, backdate: { [Op.is]: null } },
 	});
 }
-function createNewTransaction(transaction) {
-	return Transaction.create({
-		lentDate: transaction.lentDate,
-		copyId: transaction.copy,
-		customerId: transaction.customer,
+function getUnfinnishedTransactions(mNum) {
+	return Transaction.findAll({
+		where: { copyId: mNum, backdate: { [Op.is]: null } },
 	});
 }
-function finnishTransaction(mNum, date) {
-	return Transaction.update({ backDate: date }, { where: { copyId: mNum, backDate: { [Op.is]: null } } });
+function createNewTransaction(transaction) {
+	return Transaction.create(transaction);
+}
+function finnishTransaction(transaction) {
+	return Transaction.update(
+		{ backDate: transaction.backDate },
+		{ where: { copyId: transaction.copyId, backDate: { [Op.is]: null } } }
+	);
+}
+function extendTransaction(mNum, date) {
+	return Transaction.update({ maxBack: date }, { where: { copyId: mNum, backDate: { [Op.is]: null } } });
 }
 
 /* Users */
@@ -276,6 +293,17 @@ function clearDatabase() {
 	return con.sync({ force: true });
 }
 
+// Settings
+function getSetting(key) {
+	return Setting.findAll({ where: { key: key } });
+}
+function createSetting(setting) {
+	return Setting.create(setting);
+}
+function updateSetting(setting) {
+	return Setting.update(setting, { where: { id: setting.id } });
+}
+
 module.exports = {
 	//books
 	getAllBooks,
@@ -305,8 +333,10 @@ module.exports = {
 	getTransactionsByCustomer,
 	getTransactionByCustomerWithBooks,
 	countUnfinnishedTransactions,
+	getUnfinnishedTransactions,
 	createNewTransaction,
 	finnishTransaction,
+	extendTransaction,
 	//users:
 	getAllUsers,
 	getUserById,
@@ -320,4 +350,7 @@ module.exports = {
 	getWishes,
 	//admin stuff
 	clearDatabase,
+	getSetting,
+	createSetting,
+	updateSetting,
 };
