@@ -32,7 +32,7 @@ router.post("/import/books", authenticateToken, (req, res) => {
 			};
 			database.createNewBook(book).then((newBook) => {
 				element.mNums.forEach((num) => {
-					database.createNewCopy(newBook.id, Number(num));
+					database.createNewCopyWId(newBook.id, Number(num));
 				});
 			});
 		});
@@ -51,17 +51,19 @@ router.post("/import/customers", authenticateToken, (req, res) => {
 		const inputData = JSON.parse(data);
 
 		inputData.forEach((element) => {
-			var book = {
-				title: element.title,
-				subtitle: element.subtitle,
-				author: element.author,
-				isbn: element.isbn,
-				publisher: element.publisher,
-				year: element.year,
+			var group = {
+				letter: element.class,
+				year: 0,
 			};
-			database.createNewBook(book).then((newBook) => {
-				element.mNums.forEach((num) => {
-					database.createNewCopy(newBook.id, Number(num));
+			database.createClass(group).then((newGroup) => {
+				element.customers.forEach((customer) => {
+					var newCustomer = {
+						id: customer.id,
+						name: customer.name,
+						lastname: customer.lastname,
+						classId: newGroup.id,
+					};
+					database.createNewCustomer(newCustomer);
 				});
 			});
 		});
@@ -78,7 +80,7 @@ router.post("/upload", authenticateToken, async (req, res) => {
 			});
 		} else {
 			//Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
-			let books = req.files.books;
+			let books = req.files.file;
 
 			//Use the mv() method to place the file in upload directory (i.e. "uploads")
 			books.mv("src/admin/files/" + books.name);

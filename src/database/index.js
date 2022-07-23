@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 const Sequelize = require("sequelize");
 require("dotenv").config();
+const { hash, generateSecurePassword } = require("../auth/toolbox");
 
 var con = new Sequelize(process.env.DATABASE_NAME, process.env.DATABASE_USERNAME, process.env.DATABASE_PASSWORD, {
 	port: process.env.DATABASE_PORT,
@@ -131,7 +132,19 @@ Customer.belongsTo(Class);
 Customer.hasOne(User);
 User.belongsTo(Customer);
 
-con.sync({ alter: true });
+con.sync({ alter: true }).then((err) => {
+	User.findAll({ where: { perm_group: 4 } }).then((users) => {
+		if (users.length == 0) {
+			console.log("No User in db");
+			console.log("Creating new User in db");
+
+			var password = generateSecurePassword();
+			User.create({ id: 1, username: "admin", password_hash: hash(password), perm_group: 4 }).then((newUser) => {
+				console.log("(Admin) admin with password " + password);
+			});
+		}
+	});
+});
 
 /* books */
 function getAllBooks() {
@@ -168,6 +181,9 @@ function getCopyByNumber(mNumber) {
 }
 function createNewCopy(bookId) {
 	return Copy.create({ bookId: bookId, lifecycle: 1 });
+}
+function createNewCopyWId(bookId, id) {
+	return Copy.create({ bookId: bookId, lifecycle: 1, id: id });
 }
 function updateCopyLifecycle(copyId, lifecycle) {
 	return Copy.update({ lifecycle: lifecycle }, { where: { id: copyId } });
@@ -317,6 +333,7 @@ module.exports = {
 	getCopiesFromBook,
 	getCopyByNumber,
 	createNewCopy,
+	createNewCopyWId,
 	updateCopyLifecycle,
 	//customers
 	getAllCustomers,
