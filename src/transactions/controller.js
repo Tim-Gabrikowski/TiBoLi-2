@@ -70,7 +70,7 @@ function finnishTransactionAction(req, res) {
 	const { mNumber } = req.body;
 
 	database.getUnfinnishedTransactions(mNumber).then((transactions) => {
-		if (transactions.length < 1) return res.status(400).send({ message: "No transaction" });
+		if (transactions.length < 1) return res.status(200).send({ status: 0, message: "no transaction", late: false });
 		var transaction = transactions[0].dataValues;
 
 		transaction.backDate = Date.now();
@@ -92,7 +92,7 @@ function extendTransactionAction(req, res) {
 		var setting = settings[0].dataValues;
 
 		database.extendTransaction(mNumber, Date.now() + Number(setting.value + "000")).then((_) => {
-			res.send({ message: "ok", status: 0 });
+			res.send({ message: "ok", status: 0, maxBack: Date.now() + Number(setting.value + "000") });
 		});
 	});
 }
