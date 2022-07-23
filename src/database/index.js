@@ -177,6 +177,7 @@ function updateCopyLifecycle(copyId, lifecycle) {
 function getAllCustomers() {
 	return Customer.findAll({
 		attributes: ["id", "name", "lastname", "classid"],
+		include: [Class],
 	});
 }
 function getCustomerById(id) {
